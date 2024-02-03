@@ -1,0 +1,222 @@
+syntax = "v1"
+
+info (
+	title:   "用户中心"
+	desc:    "用户中心"
+	author:  "jintao liu"
+	version: "v1"
+)
+
+type User {
+	Uid    string `json:"uid"`
+	Mobile string `json:"mobile"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar"`
+}
+
+type Application {
+	ApplicationId string `json:"application_id"`
+	Name          string `json:"name"`
+	Avatar        string `json:"avatar"`
+	ContactType   uint   `json:"contact_type"`
+	Status        uint   `json:"status"`
+	Notice        string `json:"notice"`
+}
+
+type (
+	LoginReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+	LoginResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
+)
+
+type (
+	RegisterReq {
+		Name     string `json:"name"`
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+	RegisterResp {
+		Mobile string `json:"mobile"`
+	}
+)
+
+type (
+	UpdateReq {
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+	}
+	UpdateResp {
+		UserInfo User `json:"userInfo"`
+	}
+)
+
+type (
+	GetListReq {
+		NameOrUid string `json:"name_or_uid"`
+		Page      int64  `json:"page"`
+		Size      int64  `json:"size"`
+	}
+	GetListResp {
+		UserList []User `json:"user_list"`
+		Total    int64  `json:"total"`
+	}
+)
+
+type (
+	GetContactListReq {
+		NameOrUid string `json:"name_or_uid"`
+		Page      int64  `json:"page"`
+		Size      int64  `json:"size"`
+	}
+	GetContactListResp {
+		ContactList []User `json:"contact_list"`
+		Total       int64  `json:"total"`
+	}
+)
+
+type (
+	DeleteContactReq {
+		Uid string `json:"uid"`
+	}
+	DeleteContactResp  {}
+)
+
+type (
+	GetContactApplicationListReq {
+		ContactType int64 `json:"contact_type"`
+		Page        int64 `json:"page"`
+		Size        int64 `json:"size"`
+	}
+	GetContactApplicationListResp {
+		ApplicationList []Application `json:"application_list"`
+		Total           int64         `json:"total"`
+	}
+)
+
+type (
+	CreateContactApplicationReq {
+		Uid         string `json:"uid"`
+		ContactType uint   `json:"contact_type"`
+		Notice      string `json:"notice"`
+	}
+	CreateContactApplicationResp {
+		ApplicationId string `json:"application_id"`
+	}
+)
+
+type (
+	UpdateContactApplicationReq {
+		ApplicationId string `json:"application_id"`
+		Status        uint   `json:"status"`
+	}
+	UpdateContactApplicationResp  {}
+)
+
+type (
+	CreateGroupReq {
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+		Notice string `json:"notice"`
+	}
+	CreateGroupResp {
+		Gid string `json:"gid"`
+	}
+)
+
+type (
+	UpdateGroupReq {
+		Gid      string `json:"gid"`
+		Name     string `json:"name"`
+		Avatar   string `json:"avatar"`
+		Notice   string `json:"notice"`
+		AdminUid string `json:"admin_uid"`
+	}
+	UpdateGroupResp  {}
+)
+
+type (
+	DeleteUserGroupMapReq {
+		Gid string `json:"gid"`
+	}
+	DeleteUserGroupMapResp  {}
+)
+
+type (
+	DeleteGroupReq {
+		Gid string `json:"gid"`
+	}
+	DeleteGroupResp  {}
+)
+
+@server (
+	prefix: api/v1/user
+	group:  auth
+)
+service user-api {
+	@handler Login
+	post /login (LoginReq) returns (LoginResp)
+
+	@handler Register
+	post /register (RegisterReq) returns (RegisterResp)
+}
+
+@server (
+	prefix: api/v1/user
+	group:  user
+	jwt:    JwtAuth
+)
+service user-api {
+	@handler Update
+	post /update (UpdateReq) returns (UpdateResp)
+
+	@handler GetList
+	post /get_list (GetListReq) returns (GetListResp)
+}
+
+@server (
+	prefix: api/v1/user
+	group:  contact
+	jwt:    JwtAuth
+)
+service user-api {
+	@handler GetContactList
+	post /get_contact_list (GetContactListReq) returns (GetContactListResp)
+
+	@handler DeleteContact
+	post /delete_contact (DeleteContactReq) returns (DeleteContactResp)
+
+	@handler GetContactApplicationList
+	post /get_contact_application_list (GetContactApplicationListReq) returns (GetContactApplicationListResp)
+
+	@handler CreateContactApplication
+	post /create_contact_application (CreateContactApplicationReq) returns (CreateContactApplicationResp)
+
+	@handler UpdateContactApplication
+	post /update_contact_application (UpdateContactApplicationReq) returns (UpdateContactApplicationResp)
+}
+
+@server (
+	prefix: api/v1/user
+	group:  group
+	jwt:    JwtAuth
+)
+service user-api {
+	@handler CreateGroup
+	post /create_group (CreateGroupReq) returns (CreateGroupResp)
+
+	@handler UpdateGroup
+	post /update_group (UpdateGroupReq) returns (UpdateGroupResp)
+
+	@handler DeleteUserGroupMap
+	post /delete_user_group_map (DeleteUserGroupMapReq) returns (DeleteUserGroupMapResp)
+
+	@handler DeleteGroup
+	post /delete_group (DeleteGroupReq) returns (DeleteGroupResp)
+}
+
