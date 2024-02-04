@@ -39,8 +39,8 @@ type (
 	UserContact struct {
 		Id             int64          `db:"id"`
 		ContactId      string         `db:"contact_id"`       // contact_id
-		Uid            sql.NullString `db:"uid"`              // uid
-		ObjectId       sql.NullString `db:"object_id"`        // gid或uid
+		Uid            string         `db:"uid"`              // uid
+		ObjectId       string         `db:"object_id"`        // gid或uid
 		ContactType    int64          `db:"contact_type"`     // 联系人类型
 		NoteName       string         `db:"note_name"`        // 备注名称
 		LastMsgId      sql.NullInt64  `db:"last_msg_id"`      // 最后一条消息ID
