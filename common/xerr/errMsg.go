@@ -3,6 +3,7 @@ package xerr
 var message map[uint32]string
 
 const OK uint32 = 0
+const DataLocked uint32 = 100001
 const RequestParamError uint32 = 100002
 const TokenExpireError uint32 = 100003
 const TokenGenerateError uint32 = 100004
@@ -11,9 +12,9 @@ const DbUpdateAffectedZeroError uint32 = 100006
 const UserMobilePwdError uint32 = 100007
 const UserAlreadyExists uint32 = 100008
 const UserNotExists uint32 = 100009
-const DirAlreadyExists uint32 = 100010
-const DirNotExists uint32 = 100011
-const DataLocked uint32 = 100020
+const GroupNotExists uint32 = 100010
+const GroupAlreadyExists uint32 = 100011
+const PermissionError uint32 = 100012
 
 func init() {
 	message = make(map[uint32]string)
@@ -26,9 +27,10 @@ func init() {
 	message[UserMobilePwdError] = "账号或密码不正确"
 	message[UserAlreadyExists] = "用户已存在"
 	message[UserNotExists] = "用户不存在"
-	message[DirAlreadyExists] = "存在同名文件夹"
-	message[DirNotExists] = "文件夹不存在"
+	message[GroupNotExists] = "群聊组不存在"
+	message[GroupAlreadyExists] = "群聊组已存在"
 	message[DataLocked] = "数据被锁定"
+	message[PermissionError] = "权限不足"
 }
 
 func MapErrMsg(errcode uint32) string {

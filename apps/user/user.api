@@ -143,6 +143,7 @@ type (
 type (
 	DeleteUserGroupMapReq {
 		Gid string `json:"gid"`
+		Uid string `json:"uid"`
 	}
 	DeleteUserGroupMapResp  {}
 )

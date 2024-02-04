@@ -46,6 +46,7 @@ type DeleteGroupResp struct {
 
 type DeleteUserGroupMapReq struct {
 	Gid string `json:"gid"`
+	Uid string `json:"uid"`
 }
 
 type DeleteUserGroupMapResp struct {
