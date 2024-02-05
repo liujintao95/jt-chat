@@ -23,6 +23,16 @@ type Application {
 	Notice        string `json:"notice"`
 }
 
+type Contact {
+	ContactId      string `json:"contact_id"`
+	ContactType    int64  `json:"contact_type"`
+	Avatar         string `json:"avatar"`
+	NoteName       string `json:"note_name"`
+	LastMsgId      int64  `json:"last_msg_id"`
+	LastMsgContent string `json:"last_msg_content"`
+	LastMsgTime    string `json:"last_msg_time"`
+}
+
 type (
 	LoginReq {
 		Mobile   string `json:"mobile"`
@@ -58,9 +68,9 @@ type (
 
 type (
 	GetListReq {
-		NameOrUid string `json:"name_or_uid"`
-		Page      int64  `json:"page"`
-		Size      int64  `json:"size"`
+		Uid  string `json:"uid"`
+		Page int64  `json:"page"`
+		Size int64  `json:"size"`
 	}
 	GetListResp {
 		UserList []User `json:"user_list"`
@@ -75,8 +85,8 @@ type (
 		Size      int64  `json:"size"`
 	}
 	GetContactListResp {
-		ContactList []User `json:"contact_list"`
-		Total       int64  `json:"total"`
+		ContactList []Contact `json:"contact_list"`
+		Total       int64     `json:"total"`
 	}
 )
 

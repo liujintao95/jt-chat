@@ -10,6 +10,16 @@ type Application struct {
 	Notice        string `json:"notice"`
 }
 
+type Contact struct {
+	ContactId      string `json:"contact_id"`
+	ContactType    int64  `json:"contact_type"`
+	Avatar         string `json:"avatar"`
+	NoteName       string `json:"note_name"`
+	LastMsgId      int64  `json:"last_msg_id"`
+	LastMsgContent string `json:"last_msg_content"`
+	LastMsgTime    string `json:"last_msg_time"`
+}
+
 type CreateContactApplicationReq struct {
 	Uid         string `json:"uid"`
 	ContactType uint   `json:"contact_type"`
@@ -70,14 +80,14 @@ type GetContactListReq struct {
 }
 
 type GetContactListResp struct {
-	ContactList []User `json:"contact_list"`
-	Total       int64  `json:"total"`
+	ContactList []Contact `json:"contact_list"`
+	Total       int64     `json:"total"`
 }
 
 type GetListReq struct {
-	NameOrUid string `json:"name_or_uid"`
-	Page      int64  `json:"page"`
-	Size      int64  `json:"size"`
+	Uid  string `json:"uid"`
+	Page int64  `json:"page"`
+	Size int64  `json:"size"`
 }
 
 type GetListResp struct {

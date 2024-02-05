@@ -30,9 +30,9 @@ func (l *GetListLogic) GetList(req *types.GetListReq) (resp *types.GetListResp, 
 	var (
 		userList []*model.User
 	)
-	userList, err = l.svcCtx.UserModel.FindPageByNameOrUid(l.ctx, req.NameOrUid, req.Page, req.Size)
+	userList, err = l.svcCtx.UserModel.FindPageByUidLike(l.ctx, req.Uid, req.Page, req.Size)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "模糊查询(%s)用户列表", req.NameOrUid))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "模糊查询(%s)用户列表", req.Uid))
 	}
 	if len(userList) > 0 {
 		for _, user := range userList {
@@ -44,9 +44,9 @@ func (l *GetListLogic) GetList(req *types.GetListReq) (resp *types.GetListResp, 
 			})
 		}
 	}
-	resp.Total, err = l.svcCtx.UserModel.FindCountByNameOrUid(l.ctx, req.NameOrUid)
+	resp.Total, err = l.svcCtx.UserModel.FindCountByUidLike(l.ctx, req.Uid)
 	if err != nil {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "模糊查询(%s)用户列表总数", req.NameOrUid))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "模糊查询(%s)用户列表总数", req.Uid))
 	}
 	return
 }
