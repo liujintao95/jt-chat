@@ -19,6 +19,7 @@ type (
 		withSession(session sqlx.Session) UserContactModel
 		Insert(ctx context.Context, data *UserContact) (sql.Result, error)
 		DeleteByUidObjectId(ctx context.Context, uid, objectId string) error
+		DeleteByObjectId(ctx context.Context, objectId string) error
 	}
 
 	customUserContactModel struct {
@@ -46,5 +47,11 @@ func (m *customUserContactModel) Insert(ctx context.Context, data *UserContact) 
 func (m *customUserContactModel) DeleteByUidObjectId(ctx context.Context, uid, objectId string) error {
 	query := fmt.Sprintf("update %s set `delete_at` = ? where `uid` = ? and `object_id` = ?", m.table)
 	_, err := sessionctx.GetSession(ctx, m.conn).ExecCtx(ctx, query, timex.Now(), uid, objectId)
+	return err
+}
+
+func (m *customUserContactModel) DeleteByObjectId(ctx context.Context, objectId string) error {
+	query := fmt.Sprintf("update %s set `delete_at` = ? where `object_id` = ?", m.table)
+	_, err := sessionctx.GetSession(ctx, m.conn).ExecCtx(ctx, query, timex.Now(), objectId)
 	return err
 }

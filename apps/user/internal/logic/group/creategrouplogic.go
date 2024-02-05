@@ -58,11 +58,11 @@ func (l *CreateGroupLogic) CreateGroup(req *types.CreateGroupReq) (resp *types.C
 		sessionCtx = sessionctx.NewCtx(ctx, session)
 		_, err = l.svcCtx.GroupModel.Insert(sessionCtx, newGroup)
 		if err != nil {
-			return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建群聊信息[%+v]失败", newGroup))
+			return errors.Wrapf(err, "创建群聊信息[%+v]失败", newGroup)
 		}
 		_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newUserContact)
 		if err != nil {
-			return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息[%+v]失败", newUserContact))
+			return errors.Wrapf(err, "创建联系人信息[%+v]失败", newUserContact)
 		}
 		return nil
 	})
