@@ -41,7 +41,7 @@ type CreateGroupResp struct {
 }
 
 type DeleteContactReq struct {
-	Uid string `json:"uid"`
+	ObjectId string `json:"object_id"`
 }
 
 type DeleteContactResp struct {

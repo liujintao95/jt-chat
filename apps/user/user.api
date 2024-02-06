@@ -92,7 +92,7 @@ type (
 
 type (
 	DeleteContactReq {
-		Uid string `json:"uid"`
+		ObjectId string `json:"object_id"`
 	}
 	DeleteContactResp  {}
 )

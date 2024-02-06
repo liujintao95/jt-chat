@@ -23,6 +23,7 @@ type (
 		DeleteByObjectId(ctx context.Context, objectId string) error
 		FindPageByUid(ctx context.Context, uid string, page, size int64) ([]*ContactOutput, error)
 		FindCountByUid(ctx context.Context, uid string) (int64, error)
+		FindOneByUidObjectId(ctx context.Context, uid, objectId string) (*UserContact, error)
 	}
 
 	customUserContactModel struct {
@@ -120,6 +121,18 @@ func (m *customUserContactModel) FindCountByUid(ctx context.Context, uid string)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid)
 	if err != nil {
 		return 0, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindOneByUidObjectId(ctx context.Context, uid, objectId string) (*UserContact, error) {
+	var (
+		resp *UserContact
+	)
+	query := fmt.Sprintf("select %s from %s where `uid` = ? and `object_id` = ? limit 1", userContactRows, m.table)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, objectId)
+	if err != nil {
+		return nil, err
 	}
 	return resp, nil
 }
