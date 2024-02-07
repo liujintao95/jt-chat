@@ -5,8 +5,8 @@ type Application struct {
 	ApplicationId string `json:"application_id"`
 	Name          string `json:"name"`
 	Avatar        string `json:"avatar"`
-	ContactType   uint   `json:"contact_type"`
-	Status        uint   `json:"status"`
+	ContactType   int64  `json:"contact_type"`
+	Status        int64  `json:"status"`
 	Notice        string `json:"notice"`
 }
 
@@ -63,9 +63,8 @@ type DeleteUserGroupMapResp struct {
 }
 
 type GetContactApplicationListReq struct {
-	ContactType int64 `json:"contact_type"`
-	Page        int64 `json:"page"`
-	Size        int64 `json:"size"`
+	Page int64 `json:"page"`
+	Size int64 `json:"size"`
 }
 
 type GetContactApplicationListResp struct {
@@ -82,6 +81,17 @@ type GetContactListReq struct {
 type GetContactListResp struct {
 	ContactList []Contact `json:"contact_list"`
 	Total       int64     `json:"total"`
+}
+
+type GetGroupContactApplicationListReq struct {
+	Gid  string `json:"gid"`
+	Page int64  `json:"page"`
+	Size int64  `json:"size"`
+}
+
+type GetGroupContactApplicationListResp struct {
+	ApplicationList []Application `json:"application_list"`
+	Total           int64         `json:"total"`
 }
 
 type GetListReq struct {

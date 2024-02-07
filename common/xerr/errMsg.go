@@ -2,23 +2,34 @@ package xerr
 
 var message map[uint32]string
 
-const OK uint32 = 0
-const DataLocked uint32 = 100001
-const RequestParamError uint32 = 100002
-const TokenExpireError uint32 = 100003
-const TokenGenerateError uint32 = 100004
-const DbError uint32 = 100005
-const DbUpdateAffectedZeroError uint32 = 100006
-const UserMobilePwdError uint32 = 100007
-const UserAlreadyExists uint32 = 100008
-const UserNotExists uint32 = 100009
-const GroupNotExists uint32 = 100010
-const GroupAlreadyExists uint32 = 100011
-const PermissionError uint32 = 100012
-const ContactNotExists uint32 = 100013
-const ContactAlreadyExists uint32 = 100014
-const ApplicationNotExists uint32 = 100015
-const ApplicationAlreadyExists uint32 = 100016
+const (
+	OK = 0
+)
+
+const (
+	DataLocked = iota + 10001
+	RequestParamError
+	DbError
+	DbUpdateAffectedZeroError
+	PermissionError
+)
+
+const (
+	TokenExpireError = iota + 11001
+	TokenGenerateError
+)
+
+const (
+	UserMobilePwdError = iota + 20001
+	UserAlreadyExists
+	UserNotExists
+	GroupNotExists
+	GroupAlreadyExists
+	ContactNotExists
+	ContactAlreadyExists
+	ApplicationNotExists
+	ApplicationAlreadyExists
+)
 
 func init() {
 	message = make(map[uint32]string)

@@ -54,6 +54,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/get_group_contact_application_list",
+				Handler: contact.GetGroupContactApplicationListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/update_contact_application",
 				Handler: contact.UpdateContactApplicationHandler(serverCtx),
 			},

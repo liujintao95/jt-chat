@@ -40,14 +40,14 @@ func (l *CreateContactApplicationLogic) CreateContactApplication(req *types.Crea
 	uid = ctxdata.GetUidFromCtx(l.ctx)
 	userContact, err = l.svcCtx.UserContactModel.FindOneByUidObjectId(l.ctx, uid, req.ObjectId)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询用户%s的联系人%s失败", uid, req.ObjectId))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询用户%s的联系人%s", uid, req.ObjectId))
 	}
 	if userContact != nil {
 		return nil, xerr.CustomErr(xerr.ContactAlreadyExists, l.ctx, errors.Wrapf(err, "用户%s已填加联系人%s，不能重复添加", uid, req.ObjectId))
 	}
 	currentUser, err = l.svcCtx.UserModel.FindOneByUid(l.ctx, uid)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询用户%s失败", uid))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询用户%s", uid))
 	}
 
 	newApplication = &model.ContactApplication{

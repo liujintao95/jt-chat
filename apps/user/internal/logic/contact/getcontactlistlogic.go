@@ -42,7 +42,7 @@ func (l *GetContactListLogic) GetContactList(req *types.GetContactListReq) (resp
 		resp.Total, err = l.svcCtx.UserContactModel.FindCountByUidFuzzyInfo(l.ctx, uid, req.NameOrObjectId)
 	}
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "获取用户%s联系人列表失败", uid))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "获取用户%s联系人列表", uid))
 	}
 	if len(contactList) > 0 {
 		for _, contact := range contactList {

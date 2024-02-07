@@ -76,25 +76,23 @@ func (m *customUserContactModel) DeleteByObjectId(ctx context.Context, objectId 
 func (m *customUserContactModel) FindPageByUid(ctx context.Context, uid string, page, size int64) ([]*ContactOutput, error) {
 	var (
 		offset int64
-		sqlFmt string
 		resp   []*ContactOutput
 	)
-	sqlFmt = `
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
 	select contact_id, contact_type, note_name, last_msg_id, last_msg_content, 
 	       last_msg_time, u.avatar as user_avatar, g.avatar as group_avatar 
 	from user_contact as uc
 	left join user as u
 	on uc.object_id = u.uid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	left join group as g
 	on uc.object_id = g.gid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	where uid = ?
 	and delete_at is null
 	limit ?,?
-	`
-	offset = (page - 1) * size
-	query := fmt.Sprintf(sqlFmt, userRows, constant.UserContactType, constant.GroupContactType)
+	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, offset, size)
 	if err != nil {
 		return nil, err
@@ -104,22 +102,20 @@ func (m *customUserContactModel) FindPageByUid(ctx context.Context, uid string, 
 
 func (m *customUserContactModel) FindCountByUid(ctx context.Context, uid string) (int64, error) {
 	var (
-		sqlFmt string
-		resp   int64
+		resp int64
 	)
-	sqlFmt = `
+	query := fmt.Sprintf(`
 	select count(uc.id)
 	from user_contact as uc
 	left join user as u
 	on uc.object_id = u.uid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	left join group as g
 	on uc.object_id = g.gid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	where uid = ?
 	and delete_at is null
-	`
-	query := fmt.Sprintf(sqlFmt, userRows, constant.UserContactType, constant.GroupContactType)
+	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid)
 	if err != nil {
 		return 0, err
@@ -142,19 +138,19 @@ func (m *customUserContactModel) FindOneByUidObjectId(ctx context.Context, uid, 
 func (m *customUserContactModel) FindPageByUidFuzzyInfo(ctx context.Context, uid, fuzzyInfo string, page, size int64) ([]*ContactOutput, error) {
 	var (
 		offset int64
-		sqlFmt string
 		resp   []*ContactOutput
 	)
-	sqlFmt = `
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
 	select contact_id, contact_type, note_name, last_msg_id, last_msg_content, 
 	       last_msg_time, u.avatar as user_avatar, g.avatar as group_avatar 
 	from user_contact as uc
 	left join user as u
 	on uc.object_id = u.uid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	left join group as g
 	on uc.object_id = g.gid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	where uid = ?
 	and (
 		uid like '%%?%%'
@@ -163,9 +159,7 @@ func (m *customUserContactModel) FindPageByUidFuzzyInfo(ctx context.Context, uid
 	)
 	and delete_at is null
 	limit ?,?
-	`
-	offset = (page - 1) * size
-	query := fmt.Sprintf(sqlFmt, userRows, constant.UserContactType, constant.GroupContactType)
+	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, fuzzyInfo, fuzzyInfo, fuzzyInfo, offset, size)
 	if err != nil {
 		return nil, err
@@ -175,18 +169,17 @@ func (m *customUserContactModel) FindPageByUidFuzzyInfo(ctx context.Context, uid
 
 func (m *customUserContactModel) FindCountByUidFuzzyInfo(ctx context.Context, uid, fuzzyInfo string) (int64, error) {
 	var (
-		sqlFmt string
-		resp   int64
+		resp int64
 	)
-	sqlFmt = `
+	query := fmt.Sprintf(`
 	select count(uc.id)
 	from user_contact as uc
 	left join user as u
 	on uc.object_id = u.uid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	left join group as g
 	on uc.object_id = g.gid
-	and uc.ContactType = %s
+	and uc.ContactType = %d
 	where uid = ?
 	and (
 		uid like '%%?%%'
@@ -195,8 +188,7 @@ func (m *customUserContactModel) FindCountByUidFuzzyInfo(ctx context.Context, ui
 	)
 	and delete_at is null
 	limit ?,?
-	`
-	query := fmt.Sprintf(sqlFmt, userRows, constant.UserContactType, constant.GroupContactType)
+	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, fuzzyInfo, fuzzyInfo, fuzzyInfo)
 	if err != nil {
 		return 0, err

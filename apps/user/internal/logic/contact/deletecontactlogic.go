@@ -36,7 +36,7 @@ func (l *DeleteContactLogic) DeleteContact(req *types.DeleteContactReq) (resp *t
 	uid = ctxdata.GetUidFromCtx(l.ctx)
 	userContact, err = l.svcCtx.UserContactModel.FindOneByUidObjectId(l.ctx, uid, req.ObjectId)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询用户%s的联系人%s失败", uid, req.ObjectId))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询用户%s的联系人%s", uid, req.ObjectId))
 	}
 	if userContact == nil {
 		return nil, xerr.CustomErr(xerr.ContactNotExists, l.ctx, errors.Wrapf(err, "用户%s未找到联系人%s", uid, req.ObjectId))
@@ -44,13 +44,13 @@ func (l *DeleteContactLogic) DeleteContact(req *types.DeleteContactReq) (resp *t
 
 	err = l.svcCtx.UserContactModel.DeleteByUidObjectId(l.ctx, uid, req.ObjectId)
 	if err != nil {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "用户%s删除联系对象%s失败", uid, req.ObjectId))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "用户%s删除联系对象%s", uid, req.ObjectId))
 	}
 	if userContact.ContactType == constant.UserContactType {
 		// 如果联系人对象是用户，则需要删除双方的联系人信息
 		err = l.svcCtx.UserContactModel.DeleteByUidObjectId(l.ctx, req.ObjectId, uid)
 		if err != nil {
-			return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "用户%s删除联系对象%s失败", req.ObjectId, uid))
+			return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "用户%s删除联系对象%s", req.ObjectId, uid))
 		}
 	}
 	return

@@ -81,7 +81,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 		application.Status = req.Status
 		err = l.svcCtx.ContactApplicationModel.Update(sessionCtx, application)
 		if err != nil {
-			return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "修改联系人申请信息[%+v]失败", application))
+			return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "修改联系人申请信息[%+v]", application))
 		}
 		if req.Status == constant.AgreeApplicationStatus {
 			// 如果同意则需要添加联系人信息
@@ -96,7 +96,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 				}
 				_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newContact)
 				if err != nil {
-					return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息失败[%+v]", newContact))
+					return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息[%+v]", newContact))
 				}
 				newContact = &model.UserContact{
 					ContactId:   uuid.New().String(),
@@ -108,7 +108,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 				}
 				_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newContact)
 				if err != nil {
-					return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息失败[%+v]", newContact))
+					return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息[%+v]", newContact))
 				}
 			} else if application.ObjectType == constant.GroupContactType {
 				newContact = &model.UserContact{
@@ -121,7 +121,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 				}
 				_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newContact)
 				if err != nil {
-					return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息失败[%+v]", newContact))
+					return xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建联系人信息[%+v]", newContact))
 				}
 			}
 		}

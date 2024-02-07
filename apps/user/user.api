@@ -18,8 +18,8 @@ type Application {
 	ApplicationId string `json:"application_id"`
 	Name          string `json:"name"`
 	Avatar        string `json:"avatar"`
-	ContactType   uint   `json:"contact_type"`
-	Status        uint   `json:"status"`
+	ContactType   int64  `json:"contact_type"`
+	Status        int64  `json:"status"`
 	Notice        string `json:"notice"`
 }
 
@@ -99,11 +99,22 @@ type (
 
 type (
 	GetContactApplicationListReq {
-		ContactType int64 `json:"contact_type"`
-		Page        int64 `json:"page"`
-		Size        int64 `json:"size"`
+		Page int64 `json:"page"`
+		Size int64 `json:"size"`
 	}
 	GetContactApplicationListResp {
+		ApplicationList []Application `json:"application_list"`
+		Total           int64         `json:"total"`
+	}
+)
+
+type (
+	GetGroupContactApplicationListReq {
+		Gid  string `json:"gid"`
+		Page int64  `json:"page"`
+		Size int64  `json:"size"`
+	}
+	GetGroupContactApplicationListResp {
 		ApplicationList []Application `json:"application_list"`
 		Total           int64         `json:"total"`
 	}
@@ -204,6 +215,9 @@ service user-api {
 
 	@handler GetContactApplicationList
 	post /get_contact_application_list (GetContactApplicationListReq) returns (GetContactApplicationListResp)
+
+	@handler GetGroupContactApplicationList
+	post /get_group_contact_application_list (GetGroupContactApplicationListReq) returns (GetGroupContactApplicationListResp)
 
 	@handler CreateContactApplication
 	post /create_contact_application (CreateContactApplicationReq) returns (CreateContactApplicationResp)

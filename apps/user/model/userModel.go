@@ -37,18 +37,16 @@ func (m *customUserModel) withSession(session sqlx.Session) UserModel {
 
 func (m *customUserModel) FindPageByUidLike(ctx context.Context, uidLike string, page, size int64) ([]*User, error) {
 	var (
-		sqlFmt string
 		resp   []*User
 		offset int64
 	)
-	sqlFmt = `
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
 	select %s from %s
 	where uid like '%%?%%'
 	and delete_at is null
 	limit ?,?
-	`
-	offset = (page - 1) * size
-	query := fmt.Sprintf(sqlFmt, userRows, m.table)
+	`, userRows, m.table)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uidLike, offset, size)
 	if err != nil {
 		return nil, err
@@ -58,15 +56,13 @@ func (m *customUserModel) FindPageByUidLike(ctx context.Context, uidLike string,
 
 func (m *customUserModel) FindCountByUidLike(ctx context.Context, uidLike string) (int64, error) {
 	var (
-		sqlFmt string
-		resp   int64
+		resp int64
 	)
-	sqlFmt = `
+	query := fmt.Sprintf(`
 	select count(id) from %s
 	where uid like '%%?%%'
 	and delete_at is null
-	`
-	query := fmt.Sprintf(sqlFmt, m.table)
+	`, m.table)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uidLike)
 	if err != nil {
 		return 0, err
