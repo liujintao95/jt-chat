@@ -43,6 +43,7 @@ type (
 		ObjectId       string         `db:"object_id"`        // gid或uid
 		ContactType    int64          `db:"contact_type"`     // 联系人类型
 		NoteName       string         `db:"note_name"`        // 备注名称
+		NickName       string         `db:"nick_name"`        // 对象昵称
 		LastMsgId      sql.NullInt64  `db:"last_msg_id"`      // 最后一条消息ID
 		LastMsgContent sql.NullString `db:"last_msg_content"` // 最后一条消息内容
 		LastMsgTime    sql.NullTime   `db:"last_msg_time"`    // 最后一条消息时间
@@ -94,14 +95,14 @@ func (m *defaultUserContactModel) FindOneByContactId(ctx context.Context, contac
 }
 
 func (m *defaultUserContactModel) Insert(ctx context.Context, data *UserContact) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userContactRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContactId, data.Uid, data.ObjectId, data.ContactType, data.NoteName, data.LastMsgId, data.LastMsgContent, data.LastMsgTime, data.DeletedAt)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, userContactRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContactId, data.Uid, data.ObjectId, data.ContactType, data.NoteName, data.NickName, data.LastMsgId, data.LastMsgContent, data.LastMsgTime, data.DeletedAt)
 	return ret, err
 }
 
 func (m *defaultUserContactModel) Update(ctx context.Context, newData *UserContact) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userContactRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.ContactId, newData.Uid, newData.ObjectId, newData.ContactType, newData.NoteName, newData.LastMsgId, newData.LastMsgContent, newData.LastMsgTime, newData.DeletedAt, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.ContactId, newData.Uid, newData.ObjectId, newData.ContactType, newData.NoteName, newData.NickName, newData.LastMsgId, newData.LastMsgContent, newData.LastMsgTime, newData.DeletedAt, newData.Id)
 	return err
 }
 

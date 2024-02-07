@@ -24,6 +24,8 @@ type (
 		FindPageByUid(ctx context.Context, uid string, page, size int64) ([]*ContactOutput, error)
 		FindCountByUid(ctx context.Context, uid string) (int64, error)
 		FindOneByUidObjectId(ctx context.Context, uid, objectId string) (*UserContact, error)
+		FindPageByUidFuzzyInfo(ctx context.Context, uid, nameOrObjectId string, page, size int64) ([]*ContactOutput, error)
+		FindCountByUidFuzzyInfo(ctx context.Context, uid, nameOrObjectId string) (int64, error)
 	}
 
 	customUserContactModel struct {
@@ -133,6 +135,71 @@ func (m *customUserContactModel) FindOneByUidObjectId(ctx context.Context, uid, 
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, objectId)
 	if err != nil {
 		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindPageByUidFuzzyInfo(ctx context.Context, uid, fuzzyInfo string, page, size int64) ([]*ContactOutput, error) {
+	var (
+		offset int64
+		sqlFmt string
+		resp   []*ContactOutput
+	)
+	sqlFmt = `
+	select contact_id, contact_type, note_name, last_msg_id, last_msg_content, 
+	       last_msg_time, u.avatar as user_avatar, g.avatar as group_avatar 
+	from user_contact as uc
+	left join user as u
+	on uc.object_id = u.uid
+	and uc.ContactType = %s
+	left join group as g
+	on uc.object_id = g.gid
+	and uc.ContactType = %s
+	where uid = ?
+	and (
+		uid like '%%?%%'
+		or note_name like '%%?%%'
+		or nick_name like '%%?%%'
+	)
+	and delete_at is null
+	limit ?,?
+	`
+	offset = (page - 1) * size
+	query := fmt.Sprintf(sqlFmt, userRows, constant.UserContactType, constant.GroupContactType)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, fuzzyInfo, fuzzyInfo, fuzzyInfo, offset, size)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindCountByUidFuzzyInfo(ctx context.Context, uid, fuzzyInfo string) (int64, error) {
+	var (
+		sqlFmt string
+		resp   int64
+	)
+	sqlFmt = `
+	select count(uc.id)
+	from user_contact as uc
+	left join user as u
+	on uc.object_id = u.uid
+	and uc.ContactType = %s
+	left join group as g
+	on uc.object_id = g.gid
+	and uc.ContactType = %s
+	where uid = ?
+	and (
+		uid like '%%?%%'
+		or note_name like '%%?%%'
+		or nick_name like '%%?%%'
+	)
+	and delete_at is null
+	limit ?,?
+	`
+	query := fmt.Sprintf(sqlFmt, userRows, constant.UserContactType, constant.GroupContactType)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, fuzzyInfo, fuzzyInfo, fuzzyInfo)
+	if err != nil {
+		return 0, err
 	}
 	return resp, nil
 }

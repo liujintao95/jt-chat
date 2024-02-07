@@ -29,7 +29,6 @@ func NewDeleteContactLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 }
 
 func (l *DeleteContactLogic) DeleteContact(req *types.DeleteContactReq) (resp *types.DeleteContactResp, err error) {
-	// todo: add your logic here and delete this line
 	var (
 		uid         string
 		userContact *model.UserContact

@@ -80,9 +80,9 @@ type (
 
 type (
 	GetContactListReq {
-		NameOrUid string `json:"name_or_uid"`
-		Page      int64  `json:"page"`
-		Size      int64  `json:"size"`
+		NameOrObjectId string `json:"name_or_object_id"`
+		Page           int64  `json:"page"`
+		Size           int64  `json:"size"`
 	}
 	GetContactListResp {
 		ContactList []Contact `json:"contact_list"`

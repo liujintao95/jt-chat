@@ -74,9 +74,9 @@ type GetContactApplicationListResp struct {
 }
 
 type GetContactListReq struct {
-	NameOrUid string `json:"name_or_uid"`
-	Page      int64  `json:"page"`
-	Size      int64  `json:"size"`
+	NameOrObjectId string `json:"name_or_object_id"`
+	Page           int64  `json:"page"`
+	Size           int64  `json:"size"`
 }
 
 type GetContactListResp struct {

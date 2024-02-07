@@ -32,7 +32,6 @@ func NewUpdateContactApplicationLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.UpdateContactApplicationReq) (resp *types.UpdateContactApplicationResp, err error) {
-	// todo: add your logic here and delete this line
 	var (
 		uid         string
 		application *model.ContactApplication
@@ -93,6 +92,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 					ObjectId:    currentUser.Uid,
 					ContactType: application.ObjectType,
 					NoteName:    currentUser.Name,
+					NickName:    currentUser.Name,
 				}
 				_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newContact)
 				if err != nil {
@@ -104,6 +104,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 					ObjectId:    application.Uid,
 					ContactType: application.ObjectType,
 					NoteName:    application.Name,
+					NickName:    application.Name,
 				}
 				_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newContact)
 				if err != nil {
@@ -116,6 +117,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(req *types.Upda
 					ObjectId:    application.ObjectId,
 					ContactType: application.ObjectType,
 					NoteName:    group.Name,
+					NickName:    group.Name,
 				}
 				_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newContact)
 				if err != nil {

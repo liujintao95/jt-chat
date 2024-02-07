@@ -31,7 +31,6 @@ func NewCreateContactApplicationLogic(ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 func (l *CreateContactApplicationLogic) CreateContactApplication(req *types.CreateContactApplicationReq) (resp *types.CreateContactApplicationResp, err error) {
-	// todo: add your logic here and delete this line
 	var (
 		uid            string
 		userContact    *model.UserContact

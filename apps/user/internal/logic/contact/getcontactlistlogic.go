@@ -29,17 +29,17 @@ func NewGetContactListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetContactListLogic) GetContactList(req *types.GetContactListReq) (resp *types.GetContactListResp, err error) {
-	// todo: add your logic here and delete this line
 	var (
 		uid         string
 		contactList []*model.ContactOutput
 	)
 	uid = ctxdata.GetUidFromCtx(l.ctx)
-	if req.NameOrUid == "" {
+	if req.NameOrObjectId == "" {
 		contactList, err = l.svcCtx.UserContactModel.FindPageByUid(l.ctx, uid, req.Page, req.Size)
 		resp.Total, err = l.svcCtx.UserContactModel.FindCountByUid(l.ctx, uid)
 	} else {
-		// todo: 需要修改数据库结构，否则三张连表like查询太消耗资源
+		contactList, err = l.svcCtx.UserContactModel.FindPageByUidFuzzyInfo(l.ctx, uid, req.NameOrObjectId, req.Page, req.Size)
+		resp.Total, err = l.svcCtx.UserContactModel.FindCountByUidFuzzyInfo(l.ctx, uid, req.NameOrObjectId)
 	}
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
 		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "获取用户%s联系人列表失败", uid))
