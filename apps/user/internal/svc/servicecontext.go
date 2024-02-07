@@ -10,9 +10,10 @@ type ServiceContext struct {
 	Config  config.Config
 	SqlConn sqlx.SqlConn
 
-	UserModel        model.UserModel
-	GroupModel       model.GroupModel
-	UserContactModel model.UserContactModel
+	UserModel               model.UserModel
+	GroupModel              model.GroupModel
+	UserContactModel        model.UserContactModel
+	ContactApplicationModel model.ContactApplicationModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -21,8 +22,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:  c,
 		SqlConn: sqlConn,
 
-		UserModel:        model.NewUserModel(sqlConn),
-		GroupModel:       model.NewGroupModel(sqlConn),
-		UserContactModel: model.NewUserContactModel(sqlConn),
+		UserModel:               model.NewUserModel(sqlConn),
+		GroupModel:              model.NewGroupModel(sqlConn),
+		UserContactModel:        model.NewUserContactModel(sqlConn),
+		ContactApplicationModel: model.NewContactApplicationModel(sqlConn),
 	}
 }

@@ -44,7 +44,7 @@ func (l *CreateGroupLogic) CreateGroup(req *types.CreateGroupReq) (resp *types.C
 		Gid:      uuid.New().String(),
 		Name:     req.Name,
 		Avatar:   req.Avatar,
-		Notice:   sql.NullString{String: req.Avatar, Valid: true},
+		Notice:   sql.NullString{String: req.Avatar, Valid: req.Avatar != ""},
 		AdminUid: uid,
 	}
 	newUserContact = &model.UserContact{

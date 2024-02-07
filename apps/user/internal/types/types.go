@@ -21,8 +21,8 @@ type Contact struct {
 }
 
 type CreateContactApplicationReq struct {
-	Uid         string `json:"uid"`
-	ContactType uint   `json:"contact_type"`
+	ObjectId    string `json:"object_id"`
+	ContactType int64  `json:"contact_type"`
 	Notice      string `json:"notice"`
 }
 
@@ -118,7 +118,7 @@ type RegisterResp struct {
 
 type UpdateContactApplicationReq struct {
 	ApplicationId string `json:"application_id"`
-	Status        uint   `json:"status"`
+	Status        int64  `json:"status"`
 }
 
 type UpdateContactApplicationResp struct {

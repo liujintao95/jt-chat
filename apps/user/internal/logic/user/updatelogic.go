@@ -42,7 +42,7 @@ func (l *UpdateLogic) Update(req *types.UpdateReq) (resp *types.UpdateResp, err 
 		return nil, xerr.CustomErr(xerr.UserNotExists, l.ctx, errors.New(fmt.Sprintf("用户%s不存在", uid)))
 	}
 	currentUser.Name = req.Name
-	currentUser.Avatar = sql.NullString{String: req.Avatar, Valid: true}
+	currentUser.Avatar = sql.NullString{String: req.Avatar, Valid: req.Avatar != ""}
 	err = l.svcCtx.UserModel.Update(l.ctx, currentUser)
 	if err != nil {
 		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "更新用户数据[%+v]", currentUser))

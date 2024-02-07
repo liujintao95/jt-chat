@@ -42,10 +42,10 @@ type (
 		Uid           string         `db:"uid"`            // uid
 		Name          string         `db:"name"`           // 用户名
 		Avatar        sql.NullString `db:"avatar"`         // 头像
-		ObjectId      sql.NullString `db:"object_id"`      // 请求对象的gid或uid
+		ObjectId      string         `db:"object_id"`      // 请求对象的gid或uid
 		ObjectType    int64          `db:"object_type"`    // 请求对象的类型
 		Notes         sql.NullString `db:"notes"`          // 备注
-		Status        sql.NullInt64  `db:"status"`         // 状态
+		Status        int64          `db:"status"`         // 状态
 		DeletedAt     sql.NullTime   `db:"deleted_at"`     // 删除时间
 		CreatedAt     time.Time      `db:"created_at"`     // 创建时间
 		UpdatedAt     time.Time      `db:"updated_at"`     // 更新时间

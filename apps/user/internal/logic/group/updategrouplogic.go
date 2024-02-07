@@ -46,7 +46,7 @@ func (l *UpdateGroupLogic) UpdateGroup(req *types.UpdateGroupReq) (resp *types.U
 
 	group.Name = req.Name
 	group.Avatar = req.Avatar
-	group.Notice = sql.NullString{String: req.Notice, Valid: true}
+	group.Notice = sql.NullString{String: req.Notice, Valid: req.Notice != ""}
 	group.AdminUid = req.AdminUid
 	err = l.svcCtx.GroupModel.Update(l.ctx, group)
 	if err != nil {

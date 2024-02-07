@@ -111,8 +111,8 @@ type (
 
 type (
 	CreateContactApplicationReq {
-		Uid         string `json:"uid"`
-		ContactType uint   `json:"contact_type"`
+		ObjectId    string `json:"object_id"`
+		ContactType int64  `json:"contact_type"`
 		Notice      string `json:"notice"`
 	}
 	CreateContactApplicationResp {
@@ -123,7 +123,7 @@ type (
 type (
 	UpdateContactApplicationReq {
 		ApplicationId string `json:"application_id"`
-		Status        uint   `json:"status"`
+		Status        int64  `json:"status"`
 	}
 	UpdateContactApplicationResp  {}
 )
