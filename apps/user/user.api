@@ -177,70 +177,112 @@ type (
 )
 
 @server (
-	prefix: api/v1/user
+	prefix: /api/v1/user
 	group:  auth
 )
 service user-api {
+	@doc (
+		summary: "登录"
+	)
 	@handler Login
 	post /login (LoginReq) returns (LoginResp)
 
+	@doc (
+		summary: "注册"
+	)
 	@handler Register
 	post /register (RegisterReq) returns (RegisterResp)
 }
 
 @server (
-	prefix: api/v1/user
+	prefix: /api/v1/user
 	group:  user
 	jwt:    JwtAuth
 )
 service user-api {
+	@doc (
+		summary: "更新用户信息"
+	)
 	@handler Update
 	post /update (UpdateReq) returns (UpdateResp)
 
+	@doc (
+		summary: "查询用户列表"
+	)
 	@handler GetList
 	post /get_list (GetListReq) returns (GetListResp)
 }
 
 @server (
-	prefix: api/v1/user
+	prefix: /api/v1/user
 	group:  contact
 	jwt:    JwtAuth
 )
 service user-api {
+	@doc (
+		summary: "获取联系人列表"
+	)
 	@handler GetContactList
 	post /get_contact_list (GetContactListReq) returns (GetContactListResp)
 
+	@doc (
+		summary: "删除联系人"
+	)
 	@handler DeleteContact
 	post /delete_contact (DeleteContactReq) returns (DeleteContactResp)
 
+	@doc (
+		summary: "获取联系人申请列表"
+	)
 	@handler GetContactApplicationList
 	post /get_contact_application_list (GetContactApplicationListReq) returns (GetContactApplicationListResp)
 
+	@doc (
+		summary: "获取群的入群申请列表"
+	)
 	@handler GetGroupContactApplicationList
 	post /get_group_contact_application_list (GetGroupContactApplicationListReq) returns (GetGroupContactApplicationListResp)
 
+	@doc (
+		summary: "创建申请信息"
+	)
 	@handler CreateContactApplication
 	post /create_contact_application (CreateContactApplicationReq) returns (CreateContactApplicationResp)
 
+	@doc (
+		summary: "更新申请结果"
+	)
 	@handler UpdateContactApplication
 	post /update_contact_application (UpdateContactApplicationReq) returns (UpdateContactApplicationResp)
 }
 
 @server (
-	prefix: api/v1/user
+	prefix: /api/v1/user
 	group:  group
 	jwt:    JwtAuth
 )
 service user-api {
+	@doc (
+		summary: "创建群"
+	)
 	@handler CreateGroup
 	post /create_group (CreateGroupReq) returns (CreateGroupResp)
 
+	@doc (
+		summary: "更新群信息"
+	)
 	@handler UpdateGroup
 	post /update_group (UpdateGroupReq) returns (UpdateGroupResp)
 
+	@doc (
+		summary: "将用户移出群聊"
+	)
 	@handler DeleteUserGroupMap
 	post /delete_user_group_map (DeleteUserGroupMapReq) returns (DeleteUserGroupMapResp)
 
+	@doc (
+		summary: "解散群"
+	)
 	@handler DeleteGroup
 	post /delete_group (DeleteGroupReq) returns (DeleteGroupResp)
 }

@@ -1,0 +1,942 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "用户中心",
+    "description": "用户中心",
+    "version": "v1"
+  },
+  "host": "127.0.0.1:6001",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/user/create_contact_application": {
+      "post": {
+        "summary": "创建申请信息",
+        "operationId": "CreateContactApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateContactApplicationResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateContactApplicationReq"
+            }
+          }
+        ],
+        "tags": [
+          "contact"
+        ]
+      }
+    },
+    "/api/v1/user/create_group": {
+      "post": {
+        "summary": "创建群",
+        "operationId": "CreateGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateGroupResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGroupReq"
+            }
+          }
+        ],
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/api/v1/user/delete_contact": {
+      "post": {
+        "summary": "删除联系人",
+        "operationId": "DeleteContact",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteContactResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteContactReq"
+            }
+          }
+        ],
+        "tags": [
+          "contact"
+        ]
+      }
+    },
+    "/api/v1/user/delete_group": {
+      "post": {
+        "summary": "解散群",
+        "operationId": "DeleteGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteGroupResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteGroupReq"
+            }
+          }
+        ],
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/api/v1/user/delete_user_group_map": {
+      "post": {
+        "summary": "将用户移出群聊",
+        "operationId": "DeleteUserGroupMap",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserGroupMapResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUserGroupMapReq"
+            }
+          }
+        ],
+        "tags": [
+          "group"
+        ]
+      }
+    },
+    "/api/v1/user/get_contact_application_list": {
+      "post": {
+        "summary": "获取联系人申请列表",
+        "operationId": "GetContactApplicationList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetContactApplicationListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetContactApplicationListReq"
+            }
+          }
+        ],
+        "tags": [
+          "contact"
+        ]
+      }
+    },
+    "/api/v1/user/get_contact_list": {
+      "post": {
+        "summary": "获取联系人列表",
+        "operationId": "GetContactList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetContactListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetContactListReq"
+            }
+          }
+        ],
+        "tags": [
+          "contact"
+        ]
+      }
+    },
+    "/api/v1/user/get_group_contact_application_list": {
+      "post": {
+        "summary": "获取群的入群申请列表",
+        "operationId": "GetGroupContactApplicationList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGroupContactApplicationListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetGroupContactApplicationListReq"
+            }
+          }
+        ],
+        "tags": [
+          "contact"
+        ]
+      }
+    },
+    "/api/v1/user/get_list": {
+      "post": {
+        "summary": "查询用户列表",
+        "operationId": "GetList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetListReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/api/v1/user/login": {
+      "post": {
+        "summary": "登录",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/LoginResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginReq"
+            }
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/user/register": {
+      "post": {
+        "summary": "注册",
+        "operationId": "Register",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/RegisterResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterReq"
+            }
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/user/update": {
+      "post": {
+        "summary": "更新用户信息",
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/api/v1/user/update_contact_application": {
+      "post": {
+        "summary": "更新申请结果",
+        "operationId": "UpdateContactApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateContactApplicationResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateContactApplicationReq"
+            }
+          }
+        ],
+        "tags": [
+          "contact"
+        ]
+      }
+    },
+    "/api/v1/user/update_group": {
+      "post": {
+        "summary": "更新群信息",
+        "operationId": "UpdateGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateGroupResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateGroupReq"
+            }
+          }
+        ],
+        "tags": [
+          "group"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Application": {
+      "type": "object",
+      "properties": {
+        "application_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "contact_type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "notice": {
+          "type": "string"
+        }
+      },
+      "title": "Application",
+      "required": [
+        "application_id",
+        "name",
+        "avatar",
+        "contact_type",
+        "status",
+        "notice"
+      ]
+    },
+    "Contact": {
+      "type": "object",
+      "properties": {
+        "contact_id": {
+          "type": "string"
+        },
+        "contact_type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "note_name": {
+          "type": "string"
+        },
+        "last_msg_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "last_msg_content": {
+          "type": "string"
+        },
+        "last_msg_time": {
+          "type": "string"
+        }
+      },
+      "title": "Contact",
+      "required": [
+        "contact_id",
+        "contact_type",
+        "avatar",
+        "note_name",
+        "last_msg_id",
+        "last_msg_content",
+        "last_msg_time"
+      ]
+    },
+    "CreateContactApplicationReq": {
+      "type": "object",
+      "properties": {
+        "object_id": {
+          "type": "string"
+        },
+        "contact_type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "notice": {
+          "type": "string"
+        }
+      },
+      "title": "CreateContactApplicationReq",
+      "required": [
+        "object_id",
+        "contact_type",
+        "notice"
+      ]
+    },
+    "CreateContactApplicationResp": {
+      "type": "object",
+      "properties": {
+        "application_id": {
+          "type": "string"
+        }
+      },
+      "title": "CreateContactApplicationResp",
+      "required": [
+        "application_id"
+      ]
+    },
+    "CreateGroupReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "notice": {
+          "type": "string"
+        }
+      },
+      "title": "CreateGroupReq",
+      "required": [
+        "name",
+        "avatar",
+        "notice"
+      ]
+    },
+    "CreateGroupResp": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string"
+        }
+      },
+      "title": "CreateGroupResp",
+      "required": [
+        "gid"
+      ]
+    },
+    "DeleteContactReq": {
+      "type": "object",
+      "properties": {
+        "object_id": {
+          "type": "string"
+        }
+      },
+      "title": "DeleteContactReq",
+      "required": [
+        "object_id"
+      ]
+    },
+    "DeleteContactResp": {
+      "type": "object",
+      "title": "DeleteContactResp"
+    },
+    "DeleteGroupReq": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string"
+        }
+      },
+      "title": "DeleteGroupReq",
+      "required": [
+        "gid"
+      ]
+    },
+    "DeleteGroupResp": {
+      "type": "object",
+      "title": "DeleteGroupResp"
+    },
+    "DeleteUserGroupMapReq": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        }
+      },
+      "title": "DeleteUserGroupMapReq",
+      "required": [
+        "gid",
+        "uid"
+      ]
+    },
+    "DeleteUserGroupMapResp": {
+      "type": "object",
+      "title": "DeleteUserGroupMapResp"
+    },
+    "GetContactApplicationListReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetContactApplicationListReq",
+      "required": [
+        "page",
+        "size"
+      ]
+    },
+    "GetContactApplicationListResp": {
+      "type": "object",
+      "properties": {
+        "application_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Application"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetContactApplicationListResp",
+      "required": [
+        "application_list",
+        "total"
+      ]
+    },
+    "GetContactListReq": {
+      "type": "object",
+      "properties": {
+        "name_or_object_id": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetContactListReq",
+      "required": [
+        "name_or_object_id",
+        "page",
+        "size"
+      ]
+    },
+    "GetContactListResp": {
+      "type": "object",
+      "properties": {
+        "contact_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Contact"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetContactListResp",
+      "required": [
+        "contact_list",
+        "total"
+      ]
+    },
+    "GetGroupContactApplicationListReq": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetGroupContactApplicationListReq",
+      "required": [
+        "gid",
+        "page",
+        "size"
+      ]
+    },
+    "GetGroupContactApplicationListResp": {
+      "type": "object",
+      "properties": {
+        "application_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Application"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetGroupContactApplicationListResp",
+      "required": [
+        "application_list",
+        "total"
+      ]
+    },
+    "GetListReq": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetListReq",
+      "required": [
+        "uid",
+        "page",
+        "size"
+      ]
+    },
+    "GetListResp": {
+      "type": "object",
+      "properties": {
+        "user_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "GetListResp",
+      "required": [
+        "user_list",
+        "total"
+      ]
+    },
+    "LoginReq": {
+      "type": "object",
+      "properties": {
+        "mobile": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "LoginReq",
+      "required": [
+        "mobile",
+        "password"
+      ]
+    },
+    "LoginResp": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "accessExpire": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "refreshAfter": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "LoginResp",
+      "required": [
+        "accessToken",
+        "accessExpire",
+        "refreshAfter"
+      ]
+    },
+    "RegisterReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "RegisterReq",
+      "required": [
+        "name",
+        "mobile",
+        "password"
+      ]
+    },
+    "RegisterResp": {
+      "type": "object",
+      "properties": {
+        "mobile": {
+          "type": "string"
+        }
+      },
+      "title": "RegisterResp",
+      "required": [
+        "mobile"
+      ]
+    },
+    "UpdateContactApplicationReq": {
+      "type": "object",
+      "properties": {
+        "application_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "UpdateContactApplicationReq",
+      "required": [
+        "application_id",
+        "status"
+      ]
+    },
+    "UpdateContactApplicationResp": {
+      "type": "object",
+      "title": "UpdateContactApplicationResp"
+    },
+    "UpdateGroupReq": {
+      "type": "object",
+      "properties": {
+        "gid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "notice": {
+          "type": "string"
+        },
+        "admin_uid": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateGroupReq",
+      "required": [
+        "gid",
+        "name",
+        "avatar",
+        "notice",
+        "admin_uid"
+      ]
+    },
+    "UpdateGroupResp": {
+      "type": "object",
+      "title": "UpdateGroupResp"
+    },
+    "UpdateReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateReq",
+      "required": [
+        "name",
+        "avatar"
+      ]
+    },
+    "UpdateResp": {
+      "type": "object",
+      "properties": {
+        "userInfo": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "title": "UpdateResp",
+      "required": [
+        "userInfo"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        }
+      },
+      "title": "User",
+      "required": [
+        "uid",
+        "mobile",
+        "name",
+        "avatar"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
+}
