@@ -17,6 +17,8 @@ const GroupAlreadyExists uint32 = 100011
 const PermissionError uint32 = 100012
 const ContactNotExists uint32 = 100013
 const ContactAlreadyExists uint32 = 100014
+const ApplicationNotExists uint32 = 100015
+const ApplicationAlreadyExists uint32 = 100016
 
 func init() {
 	message = make(map[uint32]string)
@@ -35,6 +37,8 @@ func init() {
 	message[PermissionError] = "权限不足"
 	message[ContactNotExists] = "联系人不存在"
 	message[ContactAlreadyExists] = "联系人已存在"
+	message[ApplicationNotExists] = "联系人申请不存在"
+	message[ApplicationAlreadyExists] = "联系人申请已存在"
 }
 
 func MapErrMsg(errcode uint32) string {

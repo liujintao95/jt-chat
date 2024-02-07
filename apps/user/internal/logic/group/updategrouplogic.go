@@ -50,7 +50,7 @@ func (l *UpdateGroupLogic) UpdateGroup(req *types.UpdateGroupReq) (resp *types.U
 	group.AdminUid = req.AdminUid
 	err = l.svcCtx.GroupModel.Update(l.ctx, group)
 	if err != nil {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "修改联系对象信息[%+v]失败", req))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "修改联系对象信息[%+v]失败", group))
 	}
 	return
 }

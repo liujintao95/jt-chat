@@ -129,7 +129,7 @@ func (m *customUserContactModel) FindOneByUidObjectId(ctx context.Context, uid, 
 	var (
 		resp *UserContact
 	)
-	query := fmt.Sprintf("select %s from %s where `uid` = ? and `object_id` = ? limit 1", userContactRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `uid` = ? and `object_id` = ? and delete_at is null limit 1", userContactRows, m.table)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, objectId)
 	if err != nil {
 		return nil, err
