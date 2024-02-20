@@ -1,0 +1,288 @@
+syntax = "v1"
+
+info (
+	title:   "用户中心"
+	desc:    "用户中心"
+	author:  "jintao liu"
+	version: "v1"
+)
+
+type User {
+	Uid    string `json:"uid"`
+	Mobile string `json:"mobile"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar"`
+}
+
+type Application {
+	ApplicationId string `json:"application_id"`
+	Name          string `json:"name"`
+	Avatar        string `json:"avatar"`
+	ContactType   int64  `json:"contact_type"`
+	Status        int64  `json:"status"`
+	Notice        string `json:"notice"`
+}
+
+type Contact {
+	ContactId      string `json:"contact_id"`
+	ContactType    int64  `json:"contact_type"`
+	Avatar         string `json:"avatar"`
+	NoteName       string `json:"note_name"`
+	LastMsgId      int64  `json:"last_msg_id"`
+	LastMsgContent string `json:"last_msg_content"`
+	LastMsgTime    string `json:"last_msg_time"`
+}
+
+type (
+	LoginReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+	LoginResp {
+		AccessToken  string `json:"access_token"`
+		AccessExpire int64  `json:"access_expire"`
+		RefreshAfter int64  `json:"refresh_after"`
+	}
+)
+
+type (
+	RegisterReq {
+		Name     string `json:"name"`
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+	RegisterResp {
+		Mobile string `json:"mobile"`
+	}
+)
+
+type (
+	UpdateReq {
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+	}
+	UpdateResp {
+	}
+)
+
+type (
+	GetListReq {
+		Uid  string `json:"uid"`
+		Page int64  `json:"page"`
+		Size int64  `json:"size"`
+	}
+	GetListResp {
+		UserList []User `json:"user_list"`
+		Total    int64  `json:"total"`
+	}
+)
+
+type (
+	GetContactListReq {
+		NameOrObjectId string `json:"name_or_object_id"`
+		Page           int64  `json:"page"`
+		Size           int64  `json:"size"`
+	}
+	GetContactListResp {
+		ContactList []Contact `json:"contact_list"`
+		Total       int64     `json:"total"`
+	}
+)
+
+type (
+	DeleteContactReq {
+		ObjectId string `json:"object_id"`
+	}
+	DeleteContactResp  {}
+)
+
+type (
+	GetContactApplicationListReq {
+		Page int64 `json:"page"`
+		Size int64 `json:"size"`
+	}
+	GetContactApplicationListResp {
+		ApplicationList []Application `json:"application_list"`
+		Total           int64         `json:"total"`
+	}
+)
+
+type (
+	GetGroupContactApplicationListReq {
+		Gid  string `json:"gid"`
+		Page int64  `json:"page"`
+		Size int64  `json:"size"`
+	}
+	GetGroupContactApplicationListResp {
+		ApplicationList []Application `json:"application_list"`
+		Total           int64         `json:"total"`
+	}
+)
+
+type (
+	CreateContactApplicationReq {
+		ObjectId    string `json:"object_id"`
+		ContactType int64  `json:"contact_type"`
+		Notice      string `json:"notice"`
+	}
+	CreateContactApplicationResp {
+		ApplicationId string `json:"application_id"`
+	}
+)
+
+type (
+	UpdateContactApplicationReq {
+		ApplicationId string `json:"application_id"`
+		Status        int64  `json:"status"`
+	}
+	UpdateContactApplicationResp  {}
+)
+
+type (
+	CreateGroupReq {
+		Name   string `json:"name"`
+		Avatar string `json:"avatar"`
+		Notice string `json:"notice"`
+	}
+	CreateGroupResp {
+		Gid string `json:"gid"`
+	}
+)
+
+type (
+	UpdateGroupReq {
+		Gid      string `json:"gid"`
+		Name     string `json:"name"`
+		Avatar   string `json:"avatar"`
+		Notice   string `json:"notice"`
+		AdminUid string `json:"admin_uid"`
+	}
+	UpdateGroupResp  {}
+)
+
+type (
+	DeleteUserGroupMapReq {
+		Gid string `json:"gid"`
+		Uid string `json:"uid"`
+	}
+	DeleteUserGroupMapResp  {}
+)
+
+type (
+	DeleteGroupReq {
+		Gid string `json:"gid"`
+	}
+	DeleteGroupResp  {}
+)
+
+@server (
+	prefix: /api/v1/user
+	group:  auth
+)
+service user-api {
+	@doc (
+		summary: "登录"
+	)
+	@handler Login
+	post /login (LoginReq) returns (LoginResp)
+
+	@doc (
+		summary: "注册"
+	)
+	@handler Register
+	post /register (RegisterReq) returns (RegisterResp)
+}
+
+@server (
+	prefix: /api/v1/user
+	group:  user
+	jwt:    JwtAuth
+)
+service user-api {
+	@doc (
+		summary: "更新用户信息"
+	)
+	@handler Update
+	post /update (UpdateReq) returns (UpdateResp)
+
+	@doc (
+		summary: "查询用户列表"
+	)
+	@handler GetList
+	post /get_list (GetListReq) returns (GetListResp)
+}
+
+@server (
+	prefix: /api/v1/user
+	group:  contact
+	jwt:    JwtAuth
+)
+service user-api {
+	@doc (
+		summary: "获取联系人列表"
+	)
+	@handler GetContactList
+	post /get_contact_list (GetContactListReq) returns (GetContactListResp)
+
+	@doc (
+		summary: "删除联系人"
+	)
+	@handler DeleteContact
+	post /delete_contact (DeleteContactReq) returns (DeleteContactResp)
+
+	@doc (
+		summary: "获取联系人申请列表"
+	)
+	@handler GetContactApplicationList
+	post /get_contact_application_list (GetContactApplicationListReq) returns (GetContactApplicationListResp)
+
+	@doc (
+		summary: "获取群的入群申请列表"
+	)
+	@handler GetGroupContactApplicationList
+	post /get_group_contact_application_list (GetGroupContactApplicationListReq) returns (GetGroupContactApplicationListResp)
+
+	@doc (
+		summary: "创建申请信息"
+	)
+	@handler CreateContactApplication
+	post /create_contact_application (CreateContactApplicationReq) returns (CreateContactApplicationResp)
+
+	@doc (
+		summary: "更新申请结果"
+	)
+	@handler UpdateContactApplication
+	post /update_contact_application (UpdateContactApplicationReq) returns (UpdateContactApplicationResp)
+}
+
+@server (
+	prefix: /api/v1/user
+	group:  group
+	jwt:    JwtAuth
+)
+service user-api {
+	@doc (
+		summary: "创建群"
+	)
+	@handler CreateGroup
+	post /create_group (CreateGroupReq) returns (CreateGroupResp)
+
+	@doc (
+		summary: "更新群信息"
+	)
+	@handler UpdateGroup
+	post /update_group (UpdateGroupReq) returns (UpdateGroupResp)
+
+	@doc (
+		summary: "将用户移出群聊"
+	)
+	@handler DeleteUserGroupMap
+	post /delete_user_group_map (DeleteUserGroupMapReq) returns (DeleteUserGroupMapResp)
+
+	@doc (
+		summary: "解散群"
+	)
+	@handler DeleteGroup
+	post /delete_group (DeleteGroupReq) returns (DeleteGroupResp)
+}
+

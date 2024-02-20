@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package pb;
+
+
+message User {
+  string Uid = 1;
+  string Mobile = 2;
+  string Name = 3;
+  string Avatar = 4;
+}
+
+message Application {
+  string ApplicationId = 1;
+  string Name = 2;
+  string Avatar = 3;
+  int64  ContactType = 4;
+  int64  Status = 5;
+  string Notice = 6;
+}
+
+message Contact {
+  string ContactId = 1;
+  int64  ContactType = 2;
+  string Avatar = 3;
+  string NoteName = 4;
+  int64  LastMsgId = 5;
+  string LastMsgContent = 6;
+  string LastMsgTime = 7;
+}
+
+message LoginIn {
+  string Mobile = 1;
+  string Password = 2;
+}
+message LoginOut {
+  string AccessToken = 1;
+  int64  AccessExpire = 2;
+  int64  RefreshAfter = 3;
+}
+
+message RegisterIn {
+  string Name = 1;
+  string Mobile = 2;
+  string Password = 3;
+}
+message RegisterOut {
+  string Mobile = 1;
+}
+
+message GetListIn {
+  string Uid = 1;
+  int64  Page = 2;
+  int64  Size = 3;
+}
+message GetListOut {
+  repeated User UserList = 1;
+  int64         Total = 2;
+}
+
+message UpdateIn {
+  string Name = 1;
+  string Avatar = 2;
+}
+message UpdateOut {
+}
+
+message CreateGroupIn {
+  string Name = 1;
+  string Avatar = 2;
+  string Notice = 3;
+}
+message CreateGroupOut {
+  string Gid = 1;
+}
+
+message UpdateGroupIn {
+  string Gid = 1;
+  string Name = 2;
+  string Avatar = 3;
+  string Notice = 4;
+  string AdminUid = 5;
+}
+message UpdateGroupOut {
+}
+
+message DeleteUserGroupMapIn {
+  string Gid = 1;
+  string Uid = 2;
+}
+message DeleteUserGroupMapOut {
+}
+
+message DeleteGroupIn {
+  string Gid = 1;
+}
+message DeleteGroupOut {
+}
+
+message GetContactListIn {
+  string NameOrObjectId = 1;
+  int64  Page = 2;
+  int64  Size = 3;
+}
+message GetContactListOut {
+  repeated Contact ContactList = 1;
+  int64            Total = 2;
+}
+
+message DeleteContactIn {
+  string ObjectId = 1;
+}
+message DeleteContactOut {
+}
+
+message GetContactApplicationListIn {
+  int64 Page = 1;
+  int64 Size = 2;
+}
+message GetContactApplicationListOut {
+  repeated Application ApplicationList = 1;
+  int64                Total = 2;
+}
+
+message GetGroupContactApplicationListIn {
+  string Gid = 1;
+  int64  Page = 2;
+  int64  Size = 3;
+}
+message GetGroupContactApplicationListOut {
+  repeated Application ApplicationList = 1;
+  int64                Total = 2;
+}
+
+message CreateContactApplicationIn {
+  string ObjectId = 1;
+  int64  ContactType = 2;
+  string Notice = 3;
+}
+message CreateContactApplicationOut {
+  string ApplicationId = 1;
+}
+
+message UpdateContactApplicationIn {
+  string ApplicationId = 1;
+  int64  Status = 2;
+}
+message UpdateContactApplicationOut {
+}
+
+service user {
+  rpc login(LoginIn) returns(LoginOut);
+  rpc register(RegisterIn) returns(RegisterOut);
+  rpc getUserList(GetListIn) returns(GetListOut);
+  rpc updateUser(UpdateIn) returns(UpdateOut);
+  rpc createGroup(CreateGroupIn) returns(CreateGroupOut);
+  rpc updateGroup(UpdateGroupIn) returns(UpdateGroupOut);
+  rpc deleteUserGroupMap(DeleteUserGroupMapIn) returns(DeleteUserGroupMapOut);
+  rpc deleteGroup(DeleteGroupIn) returns(DeleteGroupOut);
+  rpc getContactList(GetContactListIn) returns(GetContactListOut);
+  rpc deleteContact(DeleteContactIn) returns(DeleteContactOut);
+  rpc getContactApplicationList(GetContactApplicationListIn) returns(GetContactApplicationListOut);
+  rpc getGroupContactApplicationList(GetGroupContactApplicationListIn) returns(GetGroupContactApplicationListOut);
+  rpc createContactApplication(CreateContactApplicationIn) returns(CreateContactApplicationOut);
+  rpc updateContactApplication(UpdateContactApplicationIn) returns(UpdateContactApplicationOut);
+}
