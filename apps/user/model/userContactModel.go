@@ -26,6 +26,10 @@ type (
 		FindOneByUidObjectId(ctx context.Context, uid, objectId string) (*UserContact, error)
 		FindPageByUidFuzzyInfo(ctx context.Context, uid, nameOrObjectId string, page, size int64) ([]*ContactOutput, error)
 		FindCountByUidFuzzyInfo(ctx context.Context, uid, nameOrObjectId string) (int64, error)
+		FindUserPageByGidFuzzyInfo(ctx context.Context, gid, fuzzyInfo string, page, size int64) ([]*GroupUserOutput, error)
+		FindUserCountByGidFuzzyInfo(ctx context.Context, gid, fuzzyInfo string) (int64, error)
+		FindUserPageByGid(ctx context.Context, gid string, page, size int64) ([]*GroupUserOutput, error)
+		FindUserCountByGid(ctx context.Context, gid string) (int64, error)
 	}
 
 	customUserContactModel struct {
@@ -41,6 +45,13 @@ type (
 		LastMsgTime    sql.NullTime   `db:"last_msg_time"`    // 最后一条消息时间
 		UserAvatar     sql.NullString `db:"user_avatar"`      // 用户头像
 		GroupAvatar    sql.NullString `db:"group_avatar"`     // 群组头像
+	}
+
+	GroupUserOutput struct {
+		Uid      string         `db:"uid"`       // uid
+		NoteName string         `db:"note_name"` // 备注名称
+		NickName string         `db:"nick_name"` // 备注名称
+		Avatar   sql.NullString `db:"avatar"`    // 头像
 	}
 )
 
@@ -86,11 +97,13 @@ func (m *customUserContactModel) FindPageByUid(ctx context.Context, uid string, 
 	left join user as u
 	on uc.object_id = u.uid
 	and uc.ContactType = %d
+	and u.delete_at is null
 	left join group as g
 	on uc.object_id = g.gid
 	and uc.ContactType = %d
-	where uid = ?
-	and delete_at is null
+	and g.delete_at is null
+	where uc.uid = ?
+	and uc.delete_at is null
 	limit ?,?
 	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, offset, size)
@@ -110,11 +123,13 @@ func (m *customUserContactModel) FindCountByUid(ctx context.Context, uid string)
 	left join user as u
 	on uc.object_id = u.uid
 	and uc.ContactType = %d
+	and u.delete_at is null
 	left join group as g
 	on uc.object_id = g.gid
 	and uc.ContactType = %d
-	where uid = ?
-	and delete_at is null
+	and g.delete_at is null
+	where uc.uid = ?
+	and uc.delete_at is null
 	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid)
 	if err != nil {
@@ -148,16 +163,18 @@ func (m *customUserContactModel) FindPageByUidFuzzyInfo(ctx context.Context, uid
 	left join user as u
 	on uc.object_id = u.uid
 	and uc.ContactType = %d
+	and u.delete_at is null
 	left join group as g
 	on uc.object_id = g.gid
 	and uc.ContactType = %d
-	where uid = ?
+	and g.delete_at is null
+	where uc.uid = ?
 	and (
-		uid like '%%?%%'
+		object_id like '%%?%%'
 		or note_name like '%%?%%'
 		or nick_name like '%%?%%'
 	)
-	and delete_at is null
+	and uc.delete_at is null
 	limit ?,?
 	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, fuzzyInfo, fuzzyInfo, fuzzyInfo, offset, size)
@@ -177,19 +194,121 @@ func (m *customUserContactModel) FindCountByUidFuzzyInfo(ctx context.Context, ui
 	left join user as u
 	on uc.object_id = u.uid
 	and uc.ContactType = %d
+	and u.delete_at is null
 	left join group as g
 	on uc.object_id = g.gid
 	and uc.ContactType = %d
-	where uid = ?
+	and g.delete_at is null
+	where uc.uid = ?
 	and (
-		uid like '%%?%%'
+		object_id like '%%?%%'
 		or note_name like '%%?%%'
 		or nick_name like '%%?%%'
 	)
-	and delete_at is null
+	and uc.delete_at is null
 	limit ?,?
 	`, constant.UserContactType, constant.GroupContactType)
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, uid, fuzzyInfo, fuzzyInfo, fuzzyInfo)
+	if err != nil {
+		return 0, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindUserPageByGidFuzzyInfo(ctx context.Context, gid, fuzzyInfo string, page, size int64) ([]*GroupUserOutput, error) {
+	var (
+		offset int64
+		resp   []*GroupUserOutput
+	)
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
+	select u.uid, u.avatar, note_name, nick_name
+	from user_contact as uc
+	inner join user as u
+	on uc.uid = u.uid
+	and uc.ContactType = %d
+	where object_id = ?
+	and (
+		uc.uid like '%%?%%'
+		or note_name like '%%?%%'
+		or nick_name like '%%?%%'
+	)
+	and uc.delete_at is null
+	and u.delete_at is null
+	limit ?,?
+	`, constant.GroupContactType)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, gid, fuzzyInfo, fuzzyInfo, fuzzyInfo, offset, size)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindUserCountByGidFuzzyInfo(ctx context.Context, gid, fuzzyInfo string) (int64, error) {
+	var (
+		resp int64
+	)
+	query := fmt.Sprintf(`
+	select count(u.id)
+	from user_contact as uc
+	inner join user as u
+	on uc.uid = u.uid
+	and uc.ContactType = %d
+	where object_id = ?
+	and (
+		uc.uid like '%%?%%'
+		or note_name like '%%?%%'
+		or nick_name like '%%?%%'
+	)
+	and uc.delete_at is null
+	and u.delete_at is null
+	`, constant.GroupContactType)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, gid, fuzzyInfo, fuzzyInfo, fuzzyInfo)
+	if err != nil {
+		return 0, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindUserPageByGid(ctx context.Context, gid string, page, size int64) ([]*GroupUserOutput, error) {
+	var (
+		offset int64
+		resp   []*GroupUserOutput
+	)
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
+	select u.uid, u.avatar, note_name, nick_name
+	from user_contact as uc
+	inner join user as u
+	on uc.uid = u.uid
+	and uc.ContactType = %d
+	where object_id = ?
+	and uc.delete_at is null
+	and u.delete_at is null
+	limit ?,?
+	`, constant.GroupContactType)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, gid, offset, size)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *customUserContactModel) FindUserCountByGid(ctx context.Context, gid string) (int64, error) {
+	var (
+		resp int64
+	)
+	query := fmt.Sprintf(`
+	select count(u.id)
+	from user_contact as uc
+	inner join user as u
+	on uc.uid = u.uid
+	and uc.ContactType = %d
+	where object_id = ?
+	and uc.delete_at is null
+	and u.delete_at is null
+	`, constant.GroupContactType)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, gid)
 	if err != nil {
 		return 0, err
 	}

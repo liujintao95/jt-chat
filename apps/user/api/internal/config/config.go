@@ -7,8 +7,8 @@ import (
 
 type Config struct {
 	rest.RestConf
-	JwtAuth           JwtConf
-	UsercenterRpcConf zrpc.RpcClientConf
+	JwtAuth     JwtConf
+	UserRpcConf zrpc.RpcClientConf
 }
 
 type JwtConf struct {

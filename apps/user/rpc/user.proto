@@ -31,6 +31,13 @@ message Contact {
   string LastMsgTime = 7;
 }
 
+message GroupUser {
+  string Uid = 1;
+  string Avatar = 2;
+  string NoteName = 3;
+  string NickName = 4;
+}
+
 message LoginIn {
   string Mobile = 1;
   string Password = 2;
@@ -50,14 +57,25 @@ message RegisterOut {
   string Mobile = 1;
 }
 
-message GetListIn {
+message GetUserListIn {
   string Uid = 1;
   int64  Page = 2;
   int64  Size = 3;
 }
-message GetListOut {
+message GetUserListOut {
   repeated User UserList = 1;
   int64         Total = 2;
+}
+
+message GetGroupUserListIn {
+  string NameOrUid = 1;
+  string Gid = 2;
+  int64  Page = 3;
+  int64  Size = 4;
+}
+message GetGroupUserListOut {
+  repeated GroupUser GroupUserList = 1;
+  int64              Total = 2;
 }
 
 message UpdateIn {
@@ -153,7 +171,8 @@ message UpdateContactApplicationOut {
 service user {
   rpc login(LoginIn) returns(LoginOut);
   rpc register(RegisterIn) returns(RegisterOut);
-  rpc getUserList(GetListIn) returns(GetListOut);
+  rpc getUserList(GetUserListIn) returns(GetUserListOut);
+  rpc getGroupUserList(GetGroupUserListIn) returns(GetGroupUserListOut);
   rpc updateUser(UpdateIn) returns(UpdateOut);
   rpc createGroup(CreateGroupIn) returns(CreateGroupOut);
   rpc updateGroup(UpdateGroupIn) returns(UpdateGroupOut);

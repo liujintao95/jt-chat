@@ -32,9 +32,14 @@ func (s *UserServer) Register(ctx context.Context, in *pb.RegisterIn) (*pb.Regis
 	return l.Register(in)
 }
 
-func (s *UserServer) GetUserList(ctx context.Context, in *pb.GetListIn) (*pb.GetListOut, error) {
+func (s *UserServer) GetUserList(ctx context.Context, in *pb.GetUserListIn) (*pb.GetUserListOut, error) {
 	l := logic.NewGetUserListLogic(ctx, s.svcCtx)
 	return l.GetUserList(in)
+}
+
+func (s *UserServer) GetGroupUserList(ctx context.Context, in *pb.GetGroupUserListIn) (*pb.GetGroupUserListOut, error) {
+	l := logic.NewGetGroupUserListLogic(ctx, s.svcCtx)
+	return l.GetGroupUserList(in)
 }
 
 func (s *UserServer) UpdateUser(ctx context.Context, in *pb.UpdateIn) (*pb.UpdateOut, error) {

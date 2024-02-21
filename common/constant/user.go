@@ -10,3 +10,7 @@ const (
 	AgreeApplicationStatus
 	RejectApplicationStatus
 )
+
+const (
+	MaxGroupSize = 1000
+)

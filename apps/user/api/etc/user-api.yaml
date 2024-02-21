@@ -12,5 +12,7 @@ JwtAuth:
   AccessSecret: 845d93df-3077-4b1a-b774-fed374d5ab10
   AccessExpire: 31536000
 
-DB:
-  DataSource: root:123456@tcp(127.0.0.1:3306)/jt_chat?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+UserRpcConf:
+  Endpoints:
+    - 127.0.0.1:2004
+  NonBlock: true

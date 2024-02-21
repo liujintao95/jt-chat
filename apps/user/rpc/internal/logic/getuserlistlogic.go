@@ -26,13 +26,13 @@ func NewGetUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserListLogic) GetUserList(in *pb.GetListIn) (*pb.GetListOut, error) {
+func (l *GetUserListLogic) GetUserList(in *pb.GetUserListIn) (*pb.GetUserListOut, error) {
 	var (
 		userList []*model.User
 		err      error
-		out      *pb.GetListOut
+		out      *pb.GetUserListOut
 	)
-	out = &pb.GetListOut{}
+	out = &pb.GetUserListOut{}
 	userList, err = l.svcCtx.UserModel.FindPageByUidLike(l.ctx, in.Uid, in.Page, in.Size)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
 		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "模糊查询(%s)用户列表", in.Uid))

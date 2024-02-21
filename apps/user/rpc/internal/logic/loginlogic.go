@@ -58,7 +58,6 @@ func (l *LoginLogic) Login(in *pb.LoginIn) (*pb.LoginOut, error) {
 	now = time.Now().Unix()
 	out.AccessExpire = now + l.svcCtx.Config.JwtAuth.AccessExpire
 	out.RefreshAfter = now + l.svcCtx.Config.JwtAuth.AccessExpire/2
-
 	return out, nil
 }
 

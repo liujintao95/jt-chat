@@ -26,9 +26,9 @@ func NewGetListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetListLo
 
 func (l *GetListLogic) GetList(req *types.GetListReq) (resp *types.GetListResp, err error) {
 	var (
-		rpcOut *user.GetListOut
+		rpcOut *user.GetUserListOut
 	)
-	rpcOut, err = l.svcCtx.UserRpc.GetUserList(l.ctx, &user.GetListIn{
+	rpcOut, err = l.svcCtx.UserRpc.GetUserList(l.ctx, &user.GetUserListIn{
 		Uid:  req.Uid,
 		Page: req.Page,
 		Size: req.Size,

@@ -31,8 +31,11 @@ type (
 	GetContactListOut                 = pb.GetContactListOut
 	GetGroupContactApplicationListIn  = pb.GetGroupContactApplicationListIn
 	GetGroupContactApplicationListOut = pb.GetGroupContactApplicationListOut
-	GetListIn                         = pb.GetListIn
-	GetListOut                        = pb.GetListOut
+	GetGroupUserListIn                = pb.GetGroupUserListIn
+	GetGroupUserListOut               = pb.GetGroupUserListOut
+	GetUserListIn                     = pb.GetUserListIn
+	GetUserListOut                    = pb.GetUserListOut
+	GroupUser                         = pb.GroupUser
 	LoginIn                           = pb.LoginIn
 	LoginOut                          = pb.LoginOut
 	RegisterIn                        = pb.RegisterIn
@@ -48,7 +51,8 @@ type (
 	UserZrpcClient interface {
 		Login(ctx context.Context, in *LoginIn, opts ...grpc.CallOption) (*LoginOut, error)
 		Register(ctx context.Context, in *RegisterIn, opts ...grpc.CallOption) (*RegisterOut, error)
-		GetUserList(ctx context.Context, in *GetListIn, opts ...grpc.CallOption) (*GetListOut, error)
+		GetUserList(ctx context.Context, in *GetUserListIn, opts ...grpc.CallOption) (*GetUserListOut, error)
+		GetGroupUserList(ctx context.Context, in *GetGroupUserListIn, opts ...grpc.CallOption) (*GetGroupUserListOut, error)
 		UpdateUser(ctx context.Context, in *UpdateIn, opts ...grpc.CallOption) (*UpdateOut, error)
 		CreateGroup(ctx context.Context, in *CreateGroupIn, opts ...grpc.CallOption) (*CreateGroupOut, error)
 		UpdateGroup(ctx context.Context, in *UpdateGroupIn, opts ...grpc.CallOption) (*UpdateGroupOut, error)
@@ -83,9 +87,14 @@ func (m *defaultUserZrpcClient) Register(ctx context.Context, in *RegisterIn, op
 	return client.Register(ctx, in, opts...)
 }
 
-func (m *defaultUserZrpcClient) GetUserList(ctx context.Context, in *GetListIn, opts ...grpc.CallOption) (*GetListOut, error) {
+func (m *defaultUserZrpcClient) GetUserList(ctx context.Context, in *GetUserListIn, opts ...grpc.CallOption) (*GetUserListOut, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.GetUserList(ctx, in, opts...)
+}
+
+func (m *defaultUserZrpcClient) GetGroupUserList(ctx context.Context, in *GetGroupUserListIn, opts ...grpc.CallOption) (*GetGroupUserListOut, error) {
+	client := pb.NewUserClient(m.cli.Conn())
+	return client.GetGroupUserList(ctx, in, opts...)
 }
 
 func (m *defaultUserZrpcClient) UpdateUser(ctx context.Context, in *UpdateIn, opts ...grpc.CallOption) (*UpdateOut, error) {

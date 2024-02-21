@@ -20,7 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 type UserClient interface {
 	Login(ctx context.Context, in *LoginIn, opts ...grpc.CallOption) (*LoginOut, error)
 	Register(ctx context.Context, in *RegisterIn, opts ...grpc.CallOption) (*RegisterOut, error)
-	GetUserList(ctx context.Context, in *GetListIn, opts ...grpc.CallOption) (*GetListOut, error)
+	GetUserList(ctx context.Context, in *GetUserListIn, opts ...grpc.CallOption) (*GetUserListOut, error)
+	GetGroupUserList(ctx context.Context, in *GetGroupUserListIn, opts ...grpc.CallOption) (*GetGroupUserListOut, error)
 	UpdateUser(ctx context.Context, in *UpdateIn, opts ...grpc.CallOption) (*UpdateOut, error)
 	CreateGroup(ctx context.Context, in *CreateGroupIn, opts ...grpc.CallOption) (*CreateGroupOut, error)
 	UpdateGroup(ctx context.Context, in *UpdateGroupIn, opts ...grpc.CallOption) (*UpdateGroupOut, error)
@@ -60,9 +61,18 @@ func (c *userClient) Register(ctx context.Context, in *RegisterIn, opts ...grpc.
 	return out, nil
 }
 
-func (c *userClient) GetUserList(ctx context.Context, in *GetListIn, opts ...grpc.CallOption) (*GetListOut, error) {
-	out := new(GetListOut)
+func (c *userClient) GetUserList(ctx context.Context, in *GetUserListIn, opts ...grpc.CallOption) (*GetUserListOut, error) {
+	out := new(GetUserListOut)
 	err := c.cc.Invoke(ctx, "/pb.user/getUserList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) GetGroupUserList(ctx context.Context, in *GetGroupUserListIn, opts ...grpc.CallOption) (*GetGroupUserListOut, error) {
+	out := new(GetGroupUserListOut)
+	err := c.cc.Invoke(ctx, "/pb.user/getGroupUserList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +184,8 @@ func (c *userClient) UpdateContactApplication(ctx context.Context, in *UpdateCon
 type UserServer interface {
 	Login(context.Context, *LoginIn) (*LoginOut, error)
 	Register(context.Context, *RegisterIn) (*RegisterOut, error)
-	GetUserList(context.Context, *GetListIn) (*GetListOut, error)
+	GetUserList(context.Context, *GetUserListIn) (*GetUserListOut, error)
+	GetGroupUserList(context.Context, *GetGroupUserListIn) (*GetGroupUserListOut, error)
 	UpdateUser(context.Context, *UpdateIn) (*UpdateOut, error)
 	CreateGroup(context.Context, *CreateGroupIn) (*CreateGroupOut, error)
 	UpdateGroup(context.Context, *UpdateGroupIn) (*UpdateGroupOut, error)
@@ -199,8 +210,11 @@ func (UnimplementedUserServer) Login(context.Context, *LoginIn) (*LoginOut, erro
 func (UnimplementedUserServer) Register(context.Context, *RegisterIn) (*RegisterOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedUserServer) GetUserList(context.Context, *GetListIn) (*GetListOut, error) {
+func (UnimplementedUserServer) GetUserList(context.Context, *GetUserListIn) (*GetUserListOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
+}
+func (UnimplementedUserServer) GetGroupUserList(context.Context, *GetGroupUserListIn) (*GetGroupUserListOut, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupUserList not implemented")
 }
 func (UnimplementedUserServer) UpdateUser(context.Context, *UpdateIn) (*UpdateOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
@@ -285,7 +299,7 @@ func _User_Register_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetListIn)
+	in := new(GetUserListIn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -297,7 +311,25 @@ func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/pb.user/getUserList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetUserList(ctx, req.(*GetListIn))
+		return srv.(UserServer).GetUserList(ctx, req.(*GetUserListIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_GetGroupUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupUserListIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetGroupUserList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.user/getGroupUserList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetGroupUserList(ctx, req.(*GetGroupUserListIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -518,6 +550,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getUserList",
 			Handler:    _User_GetUserList_Handler,
+		},
+		{
+			MethodName: "getGroupUserList",
+			Handler:    _User_GetGroupUserList_Handler,
 		},
 		{
 			MethodName: "updateUser",

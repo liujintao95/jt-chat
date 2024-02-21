@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./";
+
+package pb;
+
+message Message {
+  int32  transportType = 1;
+  string from = 2;
+  string to = 3;
+  int32  toType = 4;
+  string content = 5;
+  int32  contentType = 6;
+  string fileSuffix = 7;
+  bytes  file = 8;
+}
+
+// protoc --go_out=. --go_opt=paths=source_relative message.proto

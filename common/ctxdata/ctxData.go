@@ -2,20 +2,15 @@ package ctxdata
 
 import (
 	"context"
-	"encoding/json"
 )
 
 // CtxKeyJwtUserId get uid from ctx
 var CtxKeyJwtUserId = "jwtUserId"
 
 func GetUidFromCtx(ctx context.Context) string {
-	var (
-		uid     string
-		jsonUid json.Number
-	)
-	jsonUid, ok := ctx.Value(CtxKeyJwtUserId).(json.Number)
-	if ok {
-		uid = jsonUid.String()
-	}
-	return uid
+	return ctx.Value(CtxKeyJwtUserId).(string)
+}
+
+func GenerateCtx(ctx context.Context, uid string) context.Context {
+	return context.WithValue(ctx, CtxKeyJwtUserId, uid)
 }

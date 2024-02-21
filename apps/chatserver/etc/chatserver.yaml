@@ -1,0 +1,4 @@
+Log:
+  ServiceName: chatserver
+  Mode: console
+  Encoding: plain
