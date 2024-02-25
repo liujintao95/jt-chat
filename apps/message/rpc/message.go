@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"jt-chat/apps/user/rpc/internal/config"
-	"jt-chat/apps/user/rpc/internal/server"
-	"jt-chat/apps/user/rpc/internal/svc"
-	"jt-chat/apps/user/rpc/pb"
+	"jt-chat/apps/message/rpc/internal/config"
+	"jt-chat/apps/message/rpc/internal/server"
+	"jt-chat/apps/message/rpc/internal/svc"
+	"jt-chat/apps/message/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "apps/user/rpc/etc/user.yaml", "the config file")
+var configFile = flag.String("f", "apps/message/rpc/etc/message.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
+		pb.RegisterMessageServer(grpcServer, server.NewMessageServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

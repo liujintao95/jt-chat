@@ -44,7 +44,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(in *pb.UpdateCo
 	uid = ctxdata.GetUidFromCtx(l.ctx)
 	application, err = l.svcCtx.ContactApplicationModel.FindOneByApplicationId(l.ctx, in.ApplicationId)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询联系人申请%s失败", in.ApplicationId))
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询联系人申请%s", in.ApplicationId))
 	}
 	if application == nil {
 		return nil, xerr.CustomErr(xerr.ApplicationNotExists, l.ctx, errors.Wrapf(err, "未找到联系人申请%s", in.ApplicationId))
@@ -54,7 +54,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(in *pb.UpdateCo
 		// 判断自己是否是联系人申请的对象
 		currentUser, err = l.svcCtx.UserModel.FindOneByUid(l.ctx, uid)
 		if err != nil && !errors.Is(err, model.ErrNotFound) {
-			return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询当前用户%s失败", uid))
+			return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询当前用户%s", uid))
 		}
 		if group == nil {
 			return nil, xerr.CustomErr(xerr.GroupNotExists, l.ctx, errors.Wrapf(err, "未找到当前用户%s", uid))
@@ -66,7 +66,7 @@ func (l *UpdateContactApplicationLogic) UpdateContactApplication(in *pb.UpdateCo
 		// 判断自己是否是联系人申请群组的管理员
 		group, err = l.svcCtx.GroupModel.FindOneByGid(l.ctx, application.ObjectId)
 		if err != nil && !errors.Is(err, model.ErrNotFound) {
-			return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询群组%s失败", application.ObjectId))
+			return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询群组%s", application.ObjectId))
 		}
 		if group == nil {
 			return nil, xerr.CustomErr(xerr.GroupNotExists, l.ctx, errors.Wrapf(err, "未找到群组%s", application.ObjectId))

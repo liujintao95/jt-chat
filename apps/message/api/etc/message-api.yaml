@@ -1,3 +1,18 @@
 Name: message-api
 Host: 0.0.0.0
-Port: 8888
+Port: 6002
+Verbose: true
+
+Log:
+  ServiceName: message
+  Mode: console
+  Encoding: plain
+
+JwtAuth:
+  AccessSecret: 845d93df-3077-4b1a-b774-fed374d5ab10
+  AccessExpire: 31536000
+
+MessageRpcConf:
+  Endpoints:
+    - 127.0.0.1:2005
+  NonBlock: true

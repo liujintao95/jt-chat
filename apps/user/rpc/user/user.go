@@ -42,6 +42,8 @@ type (
 	RegisterOut                       = pb.RegisterOut
 	UpdateContactApplicationIn        = pb.UpdateContactApplicationIn
 	UpdateContactApplicationOut       = pb.UpdateContactApplicationOut
+	UpdateContactLastMsgIn            = pb.UpdateContactLastMsgIn
+	UpdateContactLastMsgOut           = pb.UpdateContactLastMsgOut
 	UpdateGroupIn                     = pb.UpdateGroupIn
 	UpdateGroupOut                    = pb.UpdateGroupOut
 	UpdateIn                          = pb.UpdateIn
@@ -59,6 +61,7 @@ type (
 		DeleteUserGroupMap(ctx context.Context, in *DeleteUserGroupMapIn, opts ...grpc.CallOption) (*DeleteUserGroupMapOut, error)
 		DeleteGroup(ctx context.Context, in *DeleteGroupIn, opts ...grpc.CallOption) (*DeleteGroupOut, error)
 		GetContactList(ctx context.Context, in *GetContactListIn, opts ...grpc.CallOption) (*GetContactListOut, error)
+		UpdateContactLastMsg(ctx context.Context, in *UpdateContactLastMsgIn, opts ...grpc.CallOption) (*UpdateContactLastMsgOut, error)
 		DeleteContact(ctx context.Context, in *DeleteContactIn, opts ...grpc.CallOption) (*DeleteContactOut, error)
 		GetContactApplicationList(ctx context.Context, in *GetContactApplicationListIn, opts ...grpc.CallOption) (*GetContactApplicationListOut, error)
 		GetGroupContactApplicationList(ctx context.Context, in *GetGroupContactApplicationListIn, opts ...grpc.CallOption) (*GetGroupContactApplicationListOut, error)
@@ -125,6 +128,11 @@ func (m *defaultUserZrpcClient) DeleteGroup(ctx context.Context, in *DeleteGroup
 func (m *defaultUserZrpcClient) GetContactList(ctx context.Context, in *GetContactListIn, opts ...grpc.CallOption) (*GetContactListOut, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.GetContactList(ctx, in, opts...)
+}
+
+func (m *defaultUserZrpcClient) UpdateContactLastMsg(ctx context.Context, in *UpdateContactLastMsgIn, opts ...grpc.CallOption) (*UpdateContactLastMsgOut, error) {
+	client := pb.NewUserClient(m.cli.Conn())
+	return client.UpdateContactLastMsg(ctx, in, opts...)
 }
 
 func (m *defaultUserZrpcClient) DeleteContact(ctx context.Context, in *DeleteContactIn, opts ...grpc.CallOption) (*DeleteContactOut, error) {

@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package pb;
+
+
+message Message {
+  string MsgId = 1;
+  int32  TransportType = 2;
+  string From = 3;
+  string To = 4;
+  int32  ToType = 5;
+  string Content = 6;
+  int32  ContentType = 7;
+  string FileSuffix = 8;
+  string FilePath = 9;
+}
+
+message SaveMsgIn {
+  Message msg = 1;
+}
+message SaveMsgOut {
+}
+
+message GetNextMsgListIn {
+  string MsgId = 1;
+  int64  Size = 2;
+}
+message GetNextMsgListOut {
+  repeated Message ApplicationList = 1;
+}
+
+message GetPreviousMsgListIn {
+  string MsgId = 1;
+  int64  Size = 2;
+}
+message GetPreviousMsgListOut {
+  repeated Message ApplicationList = 1;
+}
+
+message DownloadFileIn {
+  string FilePath = 1;
+}
+message DownloadFileOut {
+  bytes  file = 1;
+}
+
+message UploadFileIn {
+  bytes  file = 1;
+}
+message UploadFileOut {
+  string FilePath = 1;
+}
+
+service message {
+  rpc saveMsg(SaveMsgIn) returns(SaveMsgOut);
+  rpc GetNextMsgList(GetNextMsgListIn) returns(GetNextMsgListOut);
+  rpc GetPreviousMsgList(GetPreviousMsgListIn) returns(GetPreviousMsgListOut);
+  rpc DownloadFile(DownloadFileIn) returns(DownloadFileOut);
+  rpc UploadFile(UploadFileIn) returns(UploadFileOut);
+}

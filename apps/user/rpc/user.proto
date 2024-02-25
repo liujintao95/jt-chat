@@ -4,6 +4,7 @@ option go_package = "./pb";
 
 package pb;
 
+import "google/protobuf/timestamp.proto";
 
 message User {
   string Uid = 1;
@@ -127,6 +128,15 @@ message GetContactListOut {
   int64            Total = 2;
 }
 
+message UpdateContactLastMsgIn {
+  string                    ObjectId = 1;
+  int64                     LastMsgId = 2;
+  string                    LastMsgContent = 3;
+  google.protobuf.Timestamp LastMsgTime = 4;
+}
+message UpdateContactLastMsgOut {
+}
+
 message DeleteContactIn {
   string ObjectId = 1;
 }
@@ -179,6 +189,7 @@ service user {
   rpc deleteUserGroupMap(DeleteUserGroupMapIn) returns(DeleteUserGroupMapOut);
   rpc deleteGroup(DeleteGroupIn) returns(DeleteGroupOut);
   rpc getContactList(GetContactListIn) returns(GetContactListOut);
+  rpc UpdateContactLastMsg(UpdateContactLastMsgIn) returns(UpdateContactLastMsgOut);
   rpc deleteContact(DeleteContactIn) returns(DeleteContactOut);
   rpc getContactApplicationList(GetContactApplicationListIn) returns(GetContactApplicationListOut);
   rpc getGroupContactApplicationList(GetGroupContactApplicationListIn) returns(GetGroupContactApplicationListOut);

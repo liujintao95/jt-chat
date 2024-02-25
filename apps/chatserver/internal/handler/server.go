@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
+	"jt-chat/apps/message/rpc/message"
 	"jt-chat/apps/user/rpc/pb"
 	"jt-chat/apps/user/rpc/user"
 	"jt-chat/common/constant"
@@ -25,6 +26,7 @@ type Server struct {
 	Cancellation chan *Client
 	Ctx          context.Context
 	UserRpc      user.UserZrpcClient
+	MsgRpc       message.MessageZrpcClient
 	Logger       logx.Logger
 }
 
@@ -39,6 +41,10 @@ func NewSocketServer() *Server {
 		Ctx:          context.Background(),
 		UserRpc: user.NewUserZrpcClient(zrpc.MustNewClient(zrpc.RpcClientConf{
 			Endpoints: []string{"127.0.0.1:2004"},
+			NonBlock:  true,
+		})),
+		MsgRpc: message.NewMessageZrpcClient(zrpc.MustNewClient(zrpc.RpcClientConf{
+			Endpoints: []string{"127.0.0.1:2005"},
 			NonBlock:  true,
 		})),
 		Logger: logx.WithContext(ctx),

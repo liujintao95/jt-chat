@@ -72,6 +72,11 @@ func (s *UserServer) GetContactList(ctx context.Context, in *pb.GetContactListIn
 	return l.GetContactList(in)
 }
 
+func (s *UserServer) UpdateContactLastMsg(ctx context.Context, in *pb.UpdateContactLastMsgIn) (*pb.UpdateContactLastMsgOut, error) {
+	l := logic.NewUpdateContactLastMsgLogic(ctx, s.svcCtx)
+	return l.UpdateContactLastMsg(in)
+}
+
 func (s *UserServer) DeleteContact(ctx context.Context, in *pb.DeleteContactIn) (*pb.DeleteContactOut, error) {
 	l := logic.NewDeleteContactLogic(ctx, s.svcCtx)
 	return l.DeleteContact(in)
