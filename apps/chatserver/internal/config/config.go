@@ -1,7 +1,12 @@
 package config
 
-import "github.com/zeromicro/go-zero/core/logx"
+import (
+	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zeromicro/go-zero/zrpc"
+)
 
 type Config struct {
-	Log logx.LogConf
+	service.ServiceConf
+	UserRpcConf zrpc.RpcClientConf
+	MsgRpcConf  zrpc.RpcClientConf
 }

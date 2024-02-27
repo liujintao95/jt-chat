@@ -1,4 +1,4 @@
-package handler
+package logic
 
 import (
 	"context"
@@ -15,8 +15,6 @@ import (
 	protocol "jt-chat/common/pb"
 	"sync"
 )
-
-//var ChatServer = NewSocketServer()
 
 type Server struct {
 	Mutex        *sync.Mutex

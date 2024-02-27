@@ -2,3 +2,13 @@ Log:
   ServiceName: chatserver
   Mode: console
   Encoding: plain
+
+UserRpcConf:
+  Endpoints:
+    - 127.0.0.1:2004
+  NonBlock: true
+
+MsgRpcConf:
+  Endpoints:
+    - 127.0.0.1:2005
+  NonBlock: true
