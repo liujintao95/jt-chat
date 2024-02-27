@@ -31,6 +31,10 @@ const (
 	ApplicationAlreadyExists
 )
 
+const (
+	MsgNotExists = iota + 30001
+)
+
 func init() {
 	message = make(map[uint32]string)
 	message[OK] = "SUCCESS"
@@ -50,6 +54,7 @@ func init() {
 	message[ContactAlreadyExists] = "联系人已存在"
 	message[ApplicationNotExists] = "联系人申请不存在"
 	message[ApplicationAlreadyExists] = "联系人申请已存在"
+	message[MsgNotExists] = "消息不存在"
 }
 
 func MapErrMsg(errcode uint32) string {

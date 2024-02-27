@@ -22,9 +22,9 @@ func NewMessageServer(svcCtx *svc.ServiceContext) *MessageServer {
 	}
 }
 
-func (s *MessageServer) SaveMsg(ctx context.Context, in *pb.SaveMsgIn) (*pb.SaveMsgOut, error) {
-	l := logic.NewSaveMsgLogic(ctx, s.svcCtx)
-	return l.SaveMsg(in)
+func (s *MessageServer) CreateMsg(ctx context.Context, in *pb.CreateMsgIn) (*pb.CreateMsgOut, error) {
+	l := logic.NewCreateMsgLogic(ctx, s.svcCtx)
+	return l.CreateMsg(in)
 }
 
 func (s *MessageServer) GetNextMsgList(ctx context.Context, in *pb.GetNextMsgListIn) (*pb.GetNextMsgListOut, error) {

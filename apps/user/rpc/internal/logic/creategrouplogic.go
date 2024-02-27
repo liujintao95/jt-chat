@@ -59,11 +59,11 @@ func (l *CreateGroupLogic) CreateGroup(in *pb.CreateGroupIn) (*pb.CreateGroupOut
 		sessionCtx = sessionctx.NewCtx(ctx, session)
 		_, err = l.svcCtx.GroupModel.Insert(sessionCtx, newGroup)
 		if err != nil {
-			return errors.Wrapf(err, "创建群聊信息[%+v]失败", newGroup)
+			return errors.Wrapf(err, "创建群聊信息[%+v]", newGroup)
 		}
 		_, err = l.svcCtx.UserContactModel.Insert(sessionCtx, newUserContact)
 		if err != nil {
-			return errors.Wrapf(err, "创建联系人信息[%+v]失败", newUserContact)
+			return errors.Wrapf(err, "创建联系人信息[%+v]", newUserContact)
 		}
 		return nil
 	})

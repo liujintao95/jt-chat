@@ -2,6 +2,10 @@ package logic
 
 import (
 	"context"
+	"github.com/pkg/errors"
+	"jt-chat/apps/message/model"
+	"jt-chat/common/ctxdata"
+	"jt-chat/common/xerr"
 
 	"jt-chat/apps/message/rpc/internal/svc"
 	"jt-chat/apps/message/rpc/pb"
@@ -24,7 +28,41 @@ func NewGetNextMsgListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetNextMsgListLogic) GetNextMsgList(in *pb.GetNextMsgListIn) (*pb.GetNextMsgListOut, error) {
-	// todo: add your logic here and delete this line
+	var (
+		uid        string
+		currentMsg *model.Message
+		messages   []*model.Message
+		out        *pb.GetNextMsgListOut
+		err        error
+	)
+	out = &pb.GetNextMsgListOut{}
+	uid = ctxdata.GetUidFromCtx(l.ctx)
+	currentMsg, err = l.svcCtx.MessageModel.FindOneByMsgId(l.ctx, in.MsgId)
+	if err != nil {
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库查询消息%s", in.MsgId))
+	}
+	if currentMsg == nil {
+		return nil, xerr.CustomErr(xerr.MsgNotExists, l.ctx, errors.Wrapf(err, "未找到消息%s", in.MsgId))
+	}
 
-	return &pb.GetNextMsgListOut{}, nil
+	messages, err = l.svcCtx.MessageModel.FindNextPageByMsgId(l.ctx, in.MsgId, uid, in.TargetId, in.Size)
+	if err != nil {
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "数据库获取消息%s的下一页", in.MsgId))
+	}
+	if len(messages) > 0 {
+		for _, msg := range messages {
+			out.MessageList = append(out.MessageList, &pb.Message{
+				MsgId:         msg.MsgId,
+				TransportType: msg.TransportType,
+				From:          msg.From,
+				To:            msg.To,
+				ToType:        msg.ToType,
+				Content:       msg.Content,
+				ContentType:   msg.ContentType,
+				FileSuffix:    msg.FileSuffix.String,
+				FilePath:      msg.FilePath.String,
+			})
+		}
+	}
+	return out, nil
 }

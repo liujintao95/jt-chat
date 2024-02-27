@@ -7,36 +7,38 @@ package pb;
 
 message Message {
   string MsgId = 1;
-  int32  TransportType = 2;
+  int64  TransportType = 2;
   string From = 3;
   string To = 4;
-  int32  ToType = 5;
+  int64  ToType = 5;
   string Content = 6;
-  int32  ContentType = 7;
+  int64  ContentType = 7;
   string FileSuffix = 8;
   string FilePath = 9;
 }
 
-message SaveMsgIn {
+message CreateMsgIn {
   Message msg = 1;
 }
-message SaveMsgOut {
+message CreateMsgOut {
 }
 
 message GetNextMsgListIn {
   string MsgId = 1;
-  int64  Size = 2;
+  string TargetId = 2;
+  int64  Size = 3;
 }
 message GetNextMsgListOut {
-  repeated Message ApplicationList = 1;
+  repeated Message MessageList = 1;
 }
 
 message GetPreviousMsgListIn {
   string MsgId = 1;
-  int64  Size = 2;
+  string TargetId = 2;
+  int64  Size = 3;
 }
 message GetPreviousMsgListOut {
-  repeated Message ApplicationList = 1;
+  repeated Message MessageList = 1;
 }
 
 message DownloadFileIn {
@@ -54,7 +56,7 @@ message UploadFileOut {
 }
 
 service message {
-  rpc saveMsg(SaveMsgIn) returns(SaveMsgOut);
+  rpc CreateMsg(CreateMsgIn) returns(CreateMsgOut);
   rpc GetNextMsgList(GetNextMsgListIn) returns(GetNextMsgListOut);
   rpc GetPreviousMsgList(GetPreviousMsgListIn) returns(GetPreviousMsgListOut);
   rpc DownloadFile(DownloadFileIn) returns(DownloadFileOut);
