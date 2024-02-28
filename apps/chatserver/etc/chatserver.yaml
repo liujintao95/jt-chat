@@ -1,4 +1,5 @@
 Name: chat-server
+Addr: :7001
 
 Log:
   ServiceName: chat-server

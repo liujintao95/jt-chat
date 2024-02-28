@@ -7,6 +7,8 @@ import (
 	"jt-chat/apps/chatserver/internal/config"
 	"jt-chat/apps/chatserver/internal/logic"
 	"jt-chat/apps/chatserver/internal/svc"
+	"net/http"
+	"time"
 )
 
 var configFile = flag.String("f", "apps/chatserver/etc/chatserver.yaml", "the config file")
@@ -25,7 +27,19 @@ func main() {
 	svcContext := svc.NewServiceContext(c)
 	ctx := context.Background()
 
-	server := logic.NewSocketServer(ctx, svcContext)
-	server.Start()
-	defer server.Stop()
+	hub := logic.NewSocketHub(ctx, svcContext)
+	go hub.Start()
+	defer hub.Stop()
+
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		logic.ServeWs(ctx, hub, w, r)
+	})
+	server := &http.Server{
+		Addr:              c.Addr,
+		ReadHeaderTimeout: 3 * time.Second,
+	}
+	err := server.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
 }

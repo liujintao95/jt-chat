@@ -6,9 +6,25 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
-	"jt-chat/common/constant"
 	protocol "jt-chat/common/pb"
+	"net/http"
+	"time"
 )
+
+const (
+	UidKey = "uid"
+)
+
+const (
+	writeWait  = 10 * time.Second
+	pongWait   = 60 * time.Second
+	pingPeriod = (pongWait * 9) / 10
+)
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 type Client struct {
 	Conn      *websocket.Conn
@@ -17,60 +33,77 @@ type Client struct {
 	StopWrite chan bool
 	StopRead  chan bool
 	Ctx       context.Context
-	Server    *Server
+	Hub       *Hub
 }
 
 func (c *Client) Write() {
+	ticker := time.NewTicker(pingPeriod)
+	defer func() {
+		ticker.Stop()
+		_ = c.Conn.Close()
+	}()
 	for {
 		select {
-		case <-c.StopWrite:
-			return
-		case message := <-c.Send:
+		case <-ticker.C:
+			_ = c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+			err := c.Conn.WriteMessage(websocket.PingMessage, nil)
+			if err != nil {
+				return
+			}
+		case message, ok := <-c.Send:
+			if !ok {
+				_ = c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				return
+			}
+			_ = c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			err := c.Conn.WriteMessage(websocket.BinaryMessage, message)
 			if err != nil {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "用户发送消息"))
+				return
 			}
 		}
 	}
 }
 
 func (c *Client) Read() {
+	defer func() {
+		c.Hub.Cancellation <- c
+		_ = c.Conn.Close()
+	}()
 	for {
-		select {
-		case <-c.StopRead:
-			return
-		default:
-			c.Conn.PongHandler()
-			_, message, err := c.Conn.ReadMessage()
-			if err != nil {
-				// websocket断开连接
-				c.Server.Cancellation <- c
+		_, message, err := c.Conn.ReadMessage()
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "用户接收消息"))
-				continue
 			}
-			msg := &protocol.MessageForm{}
-			err = proto.Unmarshal(message, msg)
-			if err != nil {
-				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "消息解码"))
-				continue
-			}
-			if msg.TransportType == constant.TransportTypeHeartBeat {
-				pong := &protocol.MessageForm{
-					Content:       constant.MsgPong,
-					TransportType: constant.TransportTypeHeartBeat,
-				}
-				pongBytes, err := proto.Marshal(pong)
-				if err != nil {
-					logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "消息编码"))
-					continue
-				}
-				err = c.Conn.WriteMessage(websocket.BinaryMessage, pongBytes)
-				if err != nil {
-					logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "发送心跳信息"))
-				}
-			} else {
-				c.Server.Send <- message
-			}
+			break
 		}
+		msg := &protocol.MessageForm{}
+		err = proto.Unmarshal(message, msg)
+		if err != nil {
+			logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "消息解码"))
+			continue
+		}
+		c.Hub.Send <- message
 	}
+}
+
+func ServeWs(ctx context.Context, hub *Hub, w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		logx.WithContext(ctx).Error(errors.Wrapf(err, "建立websocket连接"))
+		return
+	}
+	client := &Client{
+		Conn:      conn,
+		Uid:       r.URL.Query().Get(UidKey),
+		Send:      make(chan []byte),
+		StopWrite: make(chan bool),
+		StopRead:  make(chan bool),
+		Ctx:       ctx,
+		Hub:       hub,
+	}
+	client.Hub.registerClient(client)
+	go client.Read()
+	go client.Write()
 }

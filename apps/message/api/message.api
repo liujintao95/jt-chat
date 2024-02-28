@@ -21,11 +21,6 @@ type Message {
 }
 
 type (
-	WsConnectReq  {}
-	WsConnectResp  {}
-)
-
-type (
 	GetNextMsgListReq {
 		MsgId    string `json:"msg_id"`
 		TargetId string `json:"target_id"`
@@ -64,18 +59,5 @@ service message-api {
 	)
 	@handler GetNextMsgList
 	post /get_next_msg_list (GetNextMsgListReq) returns (GetNextMsgListResp)
-}
-
-@server (
-	prefix: /api/v1/ws
-	group:  ws
-	jwt:    JwtAuth
-)
-service message-api {
-	@doc (
-		summary: "连接websoket"
-	)
-	@handler WsConnect
-	post /connect (WsConnectReq) returns (WsConnectResp)
 }
 

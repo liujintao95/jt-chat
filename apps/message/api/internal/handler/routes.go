@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	message "jt-chat/apps/message/api/internal/handler/message"
-	ws "jt-chat/apps/message/api/internal/handler/ws"
 	"jt-chat/apps/message/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -27,17 +26,5 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 		rest.WithPrefix("/api/v1/msg"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/connect",
-				Handler: ws.WsConnectHandler(serverCtx),
-			},
-		},
-		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
-		rest.WithPrefix("/api/v1/ws"),
 	)
 }

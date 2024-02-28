@@ -1,8 +1,7 @@
 package constant
 
 const (
-	TransportTypeHeartBeat = iota
-	TransportTypeWebRTC
+	TransportTypeWebRTC = iota
 	TransportTypeNormal
 )
 

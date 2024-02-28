@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	service.ServiceConf
+	Addr        string
 	UserRpcConf zrpc.RpcClientConf
 	MsgRpcConf  zrpc.RpcClientConf
 }

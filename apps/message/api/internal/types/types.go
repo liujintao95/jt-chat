@@ -33,9 +33,3 @@ type Message struct {
 	FilePath      string `json:"file_path"`
 	CreateAt      string `json:"create_at"`
 }
-
-type WsConnectReq struct {
-}
-
-type WsConnectResp struct {
-}

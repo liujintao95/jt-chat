@@ -14,7 +14,7 @@ import (
 	"sync"
 )
 
-type Server struct {
+type Hub struct {
 	Mutex        *sync.Mutex
 	Clients      map[string]*Client
 	Send         chan []byte
@@ -25,8 +25,8 @@ type Server struct {
 	Logger       logx.Logger
 }
 
-func NewSocketServer(ctx context.Context, svcCtx *svc.ServiceContext) *Server {
-	return &Server{
+func NewSocketHub(ctx context.Context, svcCtx *svc.ServiceContext) *Hub {
+	return &Hub{
 		Mutex:        &sync.Mutex{},
 		Clients:      make(map[string]*Client),
 		Send:         make(chan []byte),
@@ -38,7 +38,7 @@ func NewSocketServer(ctx context.Context, svcCtx *svc.ServiceContext) *Server {
 	}
 }
 
-func (s *Server) Start() {
+func (s *Hub) Start() {
 	logx.WithContext(s.Ctx).Info("聊天服务器已启动")
 	for {
 		select {
@@ -70,9 +70,7 @@ func (s *Server) Start() {
 	}
 }
 
-func (s *Server) registerClient(client *Client) {
-	go client.Read()
-	go client.Write()
+func (s *Hub) registerClient(client *Client) {
 	if _, ok := s.Clients[client.Uid]; ok {
 		s.Cancellation <- client
 	}
@@ -96,19 +94,14 @@ func (s *Server) registerClient(client *Client) {
 	}
 }
 
-func (s *Server) cancellationClient(client *Client) {
+func (s *Hub) cancellationClient(client *Client) {
 	if _, ok := s.Clients[client.Uid]; ok {
-		_ = client.Conn.Close()
-		client.StopRead <- true
-		client.StopWrite <- true
-		close(client.StopRead)
-		close(client.StopWrite)
 		close(client.Send)
 		delete(s.Clients, client.Uid)
 	}
 }
 
-func (s *Server) sendSingleMsg(msg *protocol.MessageForm) {
+func (s *Hub) sendSingleMsg(msg *protocol.MessageForm) {
 	client, ok := s.Clients[msg.To]
 	if ok {
 		msgByte, err := proto.Marshal(msg)
@@ -118,7 +111,7 @@ func (s *Server) sendSingleMsg(msg *protocol.MessageForm) {
 	}
 }
 
-func (s *Server) sendGroupMsg(msg *protocol.MessageForm) {
+func (s *Hub) sendGroupMsg(msg *protocol.MessageForm) {
 	var (
 		groupUsers *pb.GetGroupUserListOut
 		err        error
@@ -153,11 +146,11 @@ func (s *Server) sendGroupMsg(msg *protocol.MessageForm) {
 	}
 }
 
-func (s *Server) saveMsg(msg *protocol.MessageForm) {
+func (s *Hub) saveMsg(msg *protocol.MessageForm) {
 	// todo
 }
 
-func (s *Server) Stop() {
+func (s *Hub) Stop() {
 	for _, client := range s.Clients {
 		s.Cancellation <- client
 	}
