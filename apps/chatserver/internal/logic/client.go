@@ -48,14 +48,14 @@ func (c *Client) Read() {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "用户接收消息"))
 				continue
 			}
-			msg := &protocol.Message{}
+			msg := &protocol.MessageForm{}
 			err = proto.Unmarshal(message, msg)
 			if err != nil {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "消息解码"))
 				continue
 			}
 			if msg.TransportType == constant.TransportTypeHeartBeat {
-				pong := &protocol.Message{
+				pong := &protocol.MessageForm{
 					Content:       constant.MsgPong,
 					TransportType: constant.TransportTypeHeartBeat,
 				}

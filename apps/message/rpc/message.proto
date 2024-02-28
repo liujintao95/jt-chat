@@ -15,6 +15,7 @@ message Message {
   int64  ContentType = 7;
   string FileSuffix = 8;
   string FilePath = 9;
+  string CreatedAt = 10;
 }
 
 message CreateMsgIn {

@@ -1,15 +1,81 @@
 syntax = "v1"
 
-type Request {
-	Name string `path:"name,options=you|me"`
+info (
+	title:   "信息中心"
+	desc:    "信息中心"
+	author:  "jintao liu"
+	version: "v1"
+)
+
+type Message {
+	MsgId         string `json:"msg_id"`
+	TransportType int64  `json:"transport_type"`
+	From          string `json:"from"`
+	To            string `json:"to"`
+	ToType        int64  `json:"to_type"`
+	Content       string `json:"content"`
+	ContentType   int64  `json:"content_type"`
+	FileSuffix    string `json:"file_suffix"`
+	FilePath      string `json:"file_path"`
+	CreateAt      string `json:"create_at"`
 }
 
-type Response {
-	Message string `json:"message"`
-}
+type (
+	WsConnectReq  {}
+	WsConnectResp  {}
+)
 
+type (
+	GetNextMsgListReq {
+		MsgId    string `json:"msg_id"`
+		TargetId string `json:"target_id"`
+		Size     int64  `json:"size"`
+	}
+	GetNextMsgListResp {
+		MessageList []Message `json:"message_list"`
+	}
+)
+
+type (
+	GetPreviousMsgListReq {
+		MsgId    string `json:"msg_id"`
+		TargetId string `json:"target_id"`
+		Size     int64  `json:"size"`
+	}
+	GetPreviousMsgListResp {
+		MessageList []Message `json:"message_list"`
+	}
+)
+
+@server (
+	prefix: /api/v1/msg
+	group:  message
+	jwt:    JwtAuth
+)
 service message-api {
-	@handler MessageHandler
-	get /from/:name (Request) returns (Response)
+	@doc (
+		summary: "获取前一页的信息"
+	)
+	@handler GetPreviousMsgList
+	post /get_previous_msg_list (GetPreviousMsgListReq) returns (GetPreviousMsgListResp)
+
+	@doc (
+		summary: "获取后一页的信息"
+	)
+	@handler GetNextMsgList
+	post /get_next_msg_list (GetNextMsgListReq) returns (GetNextMsgListResp)
+}
+
+@server (
+	prefix: /api/v1/ws
+	group:  ws
+	jwt:    JwtAuth
+)
+service message-api {
+	@doc (
+		summary: "连接websoket"
+	)
+	@handler WsConnect
+	post /connect (WsConnectReq) returns (WsConnectResp)
 }
 

@@ -61,6 +61,7 @@ func (l *GetNextMsgListLogic) GetNextMsgList(in *pb.GetNextMsgListIn) (*pb.GetNe
 				ContentType:   msg.ContentType,
 				FileSuffix:    msg.FileSuffix.String,
 				FilePath:      msg.FilePath.String,
+				CreatedAt:     msg.CreatedAt.Format("2006-01-02 15:04:05"),
 			})
 		}
 	}

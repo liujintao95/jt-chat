@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/zeromicro/go-zero/core/conf"
 	"jt-chat/apps/chatserver/internal/config"
+	"jt-chat/apps/chatserver/internal/logic"
 	"jt-chat/apps/chatserver/internal/svc"
 )
 
@@ -21,4 +23,9 @@ func main() {
 	}
 
 	svcContext := svc.NewServiceContext(c)
+	ctx := context.Background()
+
+	server := logic.NewSocketServer(ctx, svcContext)
+	server.Start()
+	defer server.Stop()
 }

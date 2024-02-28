@@ -6,10 +6,8 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/zrpc"
-	"jt-chat/apps/message/rpc/message"
+	"jt-chat/apps/chatserver/internal/svc"
 	"jt-chat/apps/user/rpc/pb"
-	"jt-chat/apps/user/rpc/user"
 	"jt-chat/common/constant"
 	"jt-chat/common/ctxdata"
 	protocol "jt-chat/common/pb"
@@ -23,29 +21,20 @@ type Server struct {
 	Register     chan *Client
 	Cancellation chan *Client
 	Ctx          context.Context
-	UserRpc      user.UserZrpcClient
-	MsgRpc       message.MessageZrpcClient
+	SvcCtx       *svc.ServiceContext
 	Logger       logx.Logger
 }
 
-func NewSocketServer() *Server {
-	ctx := context.Background()
+func NewSocketServer(ctx context.Context, svcCtx *svc.ServiceContext) *Server {
 	return &Server{
 		Mutex:        &sync.Mutex{},
 		Clients:      make(map[string]*Client),
 		Send:         make(chan []byte),
 		Register:     make(chan *Client),
 		Cancellation: make(chan *Client),
-		Ctx:          context.Background(),
-		UserRpc: user.NewUserZrpcClient(zrpc.MustNewClient(zrpc.RpcClientConf{
-			Endpoints: []string{"127.0.0.1:2004"},
-			NonBlock:  true,
-		})),
-		MsgRpc: message.NewMessageZrpcClient(zrpc.MustNewClient(zrpc.RpcClientConf{
-			Endpoints: []string{"127.0.0.1:2005"},
-			NonBlock:  true,
-		})),
-		Logger: logx.WithContext(ctx),
+		Ctx:          ctx,
+		SvcCtx:       svcCtx,
+		Logger:       logx.WithContext(ctx),
 	}
 }
 
@@ -61,7 +50,7 @@ func (s *Server) Start() {
 			logx.WithContext(s.Ctx).Infof("%s登出聊天服务器", client.Uid)
 		case message := <-s.Send:
 			// 信息发送
-			msg := &protocol.Message{}
+			msg := &protocol.MessageForm{}
 			err := proto.Unmarshal(message, msg)
 			if err != nil {
 				logx.WithContext(s.Ctx).Error(errors.Wrapf(err, "消息解码"))
@@ -88,7 +77,7 @@ func (s *Server) registerClient(client *Client) {
 		s.Cancellation <- client
 	}
 	s.Clients[client.Uid] = client
-	msg := &protocol.Message{
+	msg := &protocol.MessageForm{
 		From:          constant.AdminUid,
 		To:            client.Uid,
 		ToType:        constant.ChatSingle,
@@ -119,7 +108,7 @@ func (s *Server) cancellationClient(client *Client) {
 	}
 }
 
-func (s *Server) sendSingleMsg(msg *protocol.Message) {
+func (s *Server) sendSingleMsg(msg *protocol.MessageForm) {
 	client, ok := s.Clients[msg.To]
 	if ok {
 		msgByte, err := proto.Marshal(msg)
@@ -129,12 +118,12 @@ func (s *Server) sendSingleMsg(msg *protocol.Message) {
 	}
 }
 
-func (s *Server) sendGroupMsg(msg *protocol.Message) {
+func (s *Server) sendGroupMsg(msg *protocol.MessageForm) {
 	var (
 		groupUsers *pb.GetGroupUserListOut
 		err        error
 	)
-	groupUsers, err = s.UserRpc.GetGroupUserList(
+	groupUsers, err = s.SvcCtx.UserRpc.GetGroupUserList(
 		ctxdata.GenerateCtx(s.Ctx, msg.From),
 		&pb.GetGroupUserListIn{
 			Gid:  msg.To,
@@ -164,7 +153,7 @@ func (s *Server) sendGroupMsg(msg *protocol.Message) {
 	}
 }
 
-func (s *Server) saveMsg(msg *protocol.Message) {
+func (s *Server) saveMsg(msg *protocol.MessageForm) {
 	// todo
 }
 

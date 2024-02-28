@@ -1,5 +1,7 @@
+Name: chat-server
+
 Log:
-  ServiceName: chatserver
+  ServiceName: chat-server
   Mode: console
   Encoding: plain
 
