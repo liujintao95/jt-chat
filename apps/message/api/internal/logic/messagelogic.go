@@ -24,7 +24,7 @@ func NewMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MessageLo
 }
 
 func (l *MessageLogic) Message(req *types.Request) (resp *types.Response, err error) {
-	// todo: add your logic here and delete this line
+	// todo: add your service here and delete this line
 
 	return
 }

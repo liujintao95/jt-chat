@@ -5,7 +5,7 @@ import (
 	"flag"
 	"github.com/zeromicro/go-zero/core/conf"
 	"jt-chat/apps/chatserver/internal/config"
-	"jt-chat/apps/chatserver/internal/logic"
+	"jt-chat/apps/chatserver/internal/service"
 	"jt-chat/apps/chatserver/internal/svc"
 	"net/http"
 	"time"
@@ -27,12 +27,12 @@ func main() {
 	svcContext := svc.NewServiceContext(c)
 	ctx := context.Background()
 
-	hub := logic.NewSocketHub(ctx, svcContext)
+	hub := service.NewSocketHub(ctx, svcContext)
 	go hub.Start()
 	defer hub.Stop()
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		logic.ServeWs(ctx, hub, w, r)
+		service.ServeWs(ctx, hub, w, r)
 	})
 	server := &http.Server{
 		Addr:              c.Addr,

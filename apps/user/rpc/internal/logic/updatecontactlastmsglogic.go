@@ -29,7 +29,7 @@ func NewUpdateContactLastMsgLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *UpdateContactLastMsgLogic) UpdateContactLastMsg(in *pb.UpdateContactLastMsgIn) (*pb.UpdateContactLastMsgOut, error) {
-	// todo: add your logic here and delete this line
+	// todo: add your service here and delete this line
 	var (
 		uid         string
 		userContact *model.UserContact

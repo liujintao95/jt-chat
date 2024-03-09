@@ -24,7 +24,7 @@ func NewGetNextMsgListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetNextMsgListLogic) GetNextMsgList(req *types.GetNextMsgListReq) (resp *types.GetNextMsgListResp, err error) {
-	// todo: add your logic here and delete this line
+	// todo: add your service here and delete this line
 
 	return
 }

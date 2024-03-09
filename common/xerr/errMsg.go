@@ -33,6 +33,8 @@ const (
 
 const (
 	MsgNotExists = iota + 30001
+	FileOpenErr
+	FileSaveErr
 )
 
 func init() {
@@ -55,6 +57,8 @@ func init() {
 	message[ApplicationNotExists] = "联系人申请不存在"
 	message[ApplicationAlreadyExists] = "联系人申请已存在"
 	message[MsgNotExists] = "消息不存在"
+	message[FileOpenErr] = "打开文件错误"
+	message[FileSaveErr] = "存入文件错误"
 }
 
 func MapErrMsg(errcode uint32) string {

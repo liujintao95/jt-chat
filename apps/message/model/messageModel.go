@@ -14,6 +14,7 @@ type (
 	MessageModel interface {
 		messageModel
 		withSession(session sqlx.Session) MessageModel
+		FindOneByMsgId(ctx context.Context, msgId string) (*Message, error)
 		FindNextPageByMsgId(ctx context.Context, msgId, uid, targetId string, size int64) ([]*Message, error)
 		FindPreviousPageByMsgId(ctx context.Context, msgId, uid, targetId string, size int64) ([]*Message, error)
 	}
@@ -32,6 +33,16 @@ func NewMessageModel(conn sqlx.SqlConn) MessageModel {
 
 func (m *customMessageModel) withSession(session sqlx.Session) MessageModel {
 	return NewMessageModel(sqlx.NewSqlConnFromSession(session))
+}
+
+func (m *defaultMessageModel) FindOneByMsgId(ctx context.Context, msgId string) (*Message, error) {
+	query := fmt.Sprintf("select %s from %s where `msg_id` = ? limit 1", messageRows, m.table)
+	var resp *Message
+	err := m.conn.QueryRowCtx(ctx, resp, query, msgId)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (m *customMessageModel) FindNextPageByMsgId(ctx context.Context, msgId, uid, targetId string, size int64) ([]*Message, error) {

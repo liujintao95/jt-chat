@@ -24,7 +24,7 @@ func NewDownloadFileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Down
 }
 
 func (l *DownloadFileLogic) DownloadFile(in *pb.DownloadFileIn) (*pb.DownloadFileOut, error) {
-	// todo: add your logic here and delete this line
+	// todo: add your service here and delete this line
 
 	return &pb.DownloadFileOut{}, nil
 }

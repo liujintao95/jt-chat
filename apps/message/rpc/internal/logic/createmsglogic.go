@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"jt-chat/apps/message/model"
 	"jt-chat/common/xerr"
@@ -29,23 +30,23 @@ func NewCreateMsgLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateM
 
 func (l *CreateMsgLogic) CreateMsg(in *pb.CreateMsgIn) (*pb.CreateMsgOut, error) {
 	var (
-		newMessage *model.Message
-		err        error
+		newMsg *model.Message
+		err    error
 	)
-	newMessage = &model.Message{
-		MsgId:         in.Msg.MsgId,
-		TransportType: in.Msg.TransportType,
-		From:          in.Msg.From,
-		To:            in.Msg.To,
-		ToType:        in.Msg.ToType,
-		Content:       in.Msg.Content,
-		ContentType:   in.Msg.ContentType,
-		FilePath:      sql.NullString{String: in.Msg.FilePath, Valid: in.Msg.FilePath != ""},
-		FileSuffix:    sql.NullString{String: in.Msg.FileSuffix, Valid: in.Msg.FileSuffix != ""},
+	newMsg = &model.Message{
+		MsgId:         uuid.New().String(),
+		TransportType: in.TransportType,
+		From:          in.From,
+		To:            in.To,
+		ToType:        in.ToType,
+		Content:       in.Content,
+		ContentType:   in.ContentType,
+		FilePath:      sql.NullString{String: in.FilePath, Valid: in.FilePath != ""},
+		FileExt:       sql.NullString{String: in.FileExt, Valid: in.FileExt != ""},
 	}
-	_, err = l.svcCtx.MessageModel.Insert(l.ctx, newMessage)
-	if err != nil {
-		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "创建信息[%+v]", newMessage))
+	_, err = l.svcCtx.MessageModel.Insert(l.ctx, newMsg)
+	if err != nil && !errors.Is(err, model.ErrNotFound) {
+		return nil, xerr.CustomErr(xerr.DbError, l.ctx, errors.Wrapf(err, "保存消息信息[%+v]", newMsg))
 	}
 	return &pb.CreateMsgOut{}, nil
 }

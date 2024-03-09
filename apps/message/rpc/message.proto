@@ -13,13 +13,20 @@ message Message {
   int64  ToType = 5;
   string Content = 6;
   int64  ContentType = 7;
-  string FileSuffix = 8;
+  string FileExt = 8;
   string FilePath = 9;
   string CreatedAt = 10;
 }
 
 message CreateMsgIn {
-  Message msg = 1;
+  int64  TransportType = 1;
+  string From = 2;
+  string To = 3;
+  int64  ToType = 4;
+  string Content = 5;
+  int64  ContentType = 6;
+  string FileExt = 7;
+  string FilePath = 8;
 }
 message CreateMsgOut {
 }
@@ -50,7 +57,9 @@ message DownloadFileOut {
 }
 
 message UploadFileIn {
-  bytes  file = 1;
+  string  Name = 1;
+  string  Ext = 2;
+  bytes   Data = 3;
 }
 message UploadFileOut {
   string FilePath = 1;

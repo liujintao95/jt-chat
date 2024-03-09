@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -18,7 +17,7 @@ import (
 var (
 	messageFieldNames          = builder.RawFieldNames(&Message{})
 	messageRows                = strings.Join(messageFieldNames, ",")
-	messageRowsExpectAutoSet   = strings.Join(stringx.Remove(messageFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
+	messageRowsExpectAutoSet   = strings.Join(stringx.Remove(messageFieldNames, "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	messageRowsWithPlaceHolder = strings.Join(stringx.Remove(messageFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 )
 
@@ -26,7 +25,6 @@ type (
 	messageModel interface {
 		Insert(ctx context.Context, data *Message) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Message, error)
-		FindOneByMsgId(ctx context.Context, msgId string) (*Message, error)
 		Update(ctx context.Context, data *Message) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -46,10 +44,10 @@ type (
 		Content       string         `db:"content"`        // 内容
 		ContentType   int64          `db:"content_type"`   // 内容类型
 		FilePath      sql.NullString `db:"file_path"`      // 文件保存路径
-		FileSuffix    sql.NullString `db:"file_suffix"`    // 文件后缀
+		FileExt       sql.NullString `db:"file_ext"`       // 文件类型
 		DeletedAt     sql.NullTime   `db:"deleted_at"`     // 删除时间
 		CreatedAt     time.Time      `db:"created_at"`     // 创建时间
-		UpdateAt      time.Time      `db:"update_at"`      // 更新时间
+		UpdatedAt     time.Time      `db:"updated_at"`     // 更新时间
 	}
 )
 
@@ -80,29 +78,15 @@ func (m *defaultMessageModel) FindOne(ctx context.Context, id int64) (*Message, 
 	}
 }
 
-func (m *defaultMessageModel) FindOneByMsgId(ctx context.Context, msgId string) (*Message, error) {
-	var resp Message
-	query := fmt.Sprintf("select %s from %s where `msg_id` = ? limit 1", messageRows, m.table)
-	err := m.conn.QueryRowCtx(ctx, &resp, query, msgId)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
 func (m *defaultMessageModel) Insert(ctx context.Context, data *Message) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, messageRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.MsgId, data.TransportType, data.From, data.To, data.ToType, data.Content, data.ContentType, data.FilePath, data.FileSuffix, data.DeletedAt)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, messageRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.MsgId, data.TransportType, data.From, data.To, data.ToType, data.Content, data.ContentType, data.FilePath, data.FileExt, data.DeletedAt)
 	return ret, err
 }
 
-func (m *defaultMessageModel) Update(ctx context.Context, newData *Message) error {
+func (m *defaultMessageModel) Update(ctx context.Context, data *Message) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, messageRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, newData.MsgId, newData.TransportType, newData.From, newData.To, newData.ToType, newData.Content, newData.ContentType, newData.FilePath, newData.FileSuffix, newData.DeletedAt, newData.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.MsgId, data.TransportType, data.From, data.To, data.ToType, data.Content, data.ContentType, data.FilePath, data.FileExt, data.DeletedAt, data.Id)
 	return err
 }
 

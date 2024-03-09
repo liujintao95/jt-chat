@@ -59,7 +59,7 @@ func (l *GetPreviousMsgListLogic) GetPreviousMsgList(in *pb.GetPreviousMsgListIn
 				ToType:        msg.ToType,
 				Content:       msg.Content,
 				ContentType:   msg.ContentType,
-				FileSuffix:    msg.FileSuffix.String,
+				FileExt:       msg.FileExt.String,
 				FilePath:      msg.FilePath.String,
 				CreatedAt:     msg.CreatedAt.Format("2006-01-02 15:04:05"),
 			})

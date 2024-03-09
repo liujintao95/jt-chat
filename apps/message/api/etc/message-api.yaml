@@ -14,5 +14,5 @@ JwtAuth:
 
 MessageRpcConf:
   Endpoints:
-    - 127.0.0.1:2005
+    - 127.0.0.1:7005
   NonBlock: true

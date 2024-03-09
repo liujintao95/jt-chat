@@ -11,6 +11,7 @@ type ServiceContext struct {
 	SqlConn sqlx.SqlConn
 
 	MessageModel model.MessageModel
+	FileModel    model.FileModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -20,5 +21,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SqlConn: sqlConn,
 
 		MessageModel: model.NewMessageModel(sqlConn),
+		FileModel:    model.NewFileModel(sqlConn),
 	}
 }

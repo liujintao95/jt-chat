@@ -5,14 +5,15 @@ option go_package = "./";
 package pb;
 
 message MessageForm {
-  int32  transportType = 1;
+  int64  transportType = 1;
   string from = 2;
   string to = 3;
-  int32  toType = 4;
+  int64  toType = 4;
   string content = 5;
-  int32  contentType = 6;
-  string fileSuffix = 7;
-  bytes  file = 8;
+  int64  contentType = 6;
+  string fileName = 7;
+  string fileExt = 8;
+  bytes  file = 9;
 }
 
 // protoc --go_out=. --go_opt=paths=source_relative message.proto
