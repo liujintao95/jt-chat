@@ -2,6 +2,8 @@ package message
 
 import (
 	"context"
+	"github.com/jinzhu/copier"
+	"jt-chat/apps/message/rpc/message"
 
 	"jt-chat/apps/message/api/internal/svc"
 	"jt-chat/apps/message/api/internal/types"
@@ -24,7 +26,17 @@ func NewGetNextMsgListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetNextMsgListLogic) GetNextMsgList(req *types.GetNextMsgListReq) (resp *types.GetNextMsgListResp, err error) {
-	// todo: add your service here and delete this line
-
+	var (
+		rpcOut *message.GetNextMsgListOut
+	)
+	rpcOut, err = l.svcCtx.MsgRpc.GetNextMsgList(l.ctx, &message.GetNextMsgListIn{
+		MsgId:    req.MsgId,
+		TargetId: req.TargetId,
+		Size:     req.Size,
+	})
+	if err != nil {
+		return nil, err
+	}
+	_ = copier.Copy(&resp, rpcOut)
 	return
 }
