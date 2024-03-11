@@ -35,6 +35,7 @@ const (
 	MsgNotExists = iota + 30001
 	FileOpenErr
 	FileSaveErr
+	FileNotExists
 )
 
 func init() {
@@ -59,6 +60,7 @@ func init() {
 	message[MsgNotExists] = "消息不存在"
 	message[FileOpenErr] = "打开文件错误"
 	message[FileSaveErr] = "存入文件错误"
+	message[FileNotExists] = "文件不存在"
 }
 
 func MapErrMsg(errcode uint32) string {

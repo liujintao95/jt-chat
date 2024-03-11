@@ -50,16 +50,20 @@ message GetPreviousMsgListOut {
 }
 
 message DownloadFileIn {
-  string FilePath = 1;
+  string MsgId = 1;
+  string FilePath = 2;
 }
 message DownloadFileOut {
-  bytes  file = 1;
+  string Name = 1;
+  string Ext = 2;
+  int64  Size = 3;
+  bytes  Data = 4;
 }
 
 message UploadFileIn {
-  string  Name = 1;
-  string  Ext = 2;
-  bytes   Data = 3;
+  string Name = 1;
+  string Ext = 2;
+  bytes  Data = 3;
 }
 message UploadFileOut {
   string FilePath = 1;

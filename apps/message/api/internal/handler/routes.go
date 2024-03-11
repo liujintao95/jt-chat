@@ -15,6 +15,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/download_file",
+				Handler: message.DownloadFileHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/get_next_msg_list",
 				Handler: message.GetNextMsgListHandler(serverCtx),
 			},
