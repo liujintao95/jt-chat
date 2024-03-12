@@ -1,5 +1,16 @@
 package constant
 
+import "time"
+
+const (
+	UidKey = "uid"
+)
+
+const (
+	AdminName = "admin"
+	AdminUid  = "0000001"
+)
+
 const (
 	TransportTypeWebRTC = iota
 	TransportTypeNormal
@@ -8,11 +19,6 @@ const (
 const (
 	MsgPong    = "pong"
 	MsgWelcome = "欢迎登录!"
-)
-
-const (
-	AdminName = "admin"
-	AdminUid  = "0000001"
 )
 
 const (
@@ -26,4 +32,10 @@ const (
 const (
 	ChatSingle = UserContactType
 	ChatGroup  = GroupContactType
+)
+
+const (
+	WriteWait  = 10 * time.Second
+	PongWait   = 60 * time.Second
+	PingPeriod = (PongWait * 9) / 10
 )

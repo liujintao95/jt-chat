@@ -6,19 +6,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
+	"jt-chat/common/constant"
 	protocol "jt-chat/common/pb"
 	"net/http"
 	"time"
-)
-
-const (
-	UidKey = "uid"
-)
-
-const (
-	writeWait  = 10 * time.Second
-	pongWait   = 60 * time.Second
-	pingPeriod = (pongWait * 9) / 10
 )
 
 var upgrader = websocket.Upgrader{
@@ -37,7 +28,7 @@ type Client struct {
 }
 
 func (c *Client) Write() {
-	ticker := time.NewTicker(pingPeriod)
+	ticker := time.NewTicker(constant.PingPeriod)
 	defer func() {
 		ticker.Stop()
 		_ = c.Conn.Close()
@@ -45,7 +36,7 @@ func (c *Client) Write() {
 	for {
 		select {
 		case <-ticker.C:
-			_ = c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.Conn.SetWriteDeadline(time.Now().Add(constant.WriteWait))
 			err := c.Conn.WriteMessage(websocket.PingMessage, nil)
 			if err != nil {
 				return
@@ -55,7 +46,7 @@ func (c *Client) Write() {
 				_ = c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-			_ = c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.Conn.SetWriteDeadline(time.Now().Add(constant.WriteWait))
 			err := c.Conn.WriteMessage(websocket.BinaryMessage, message)
 			if err != nil {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "用户发送消息"))
@@ -96,7 +87,7 @@ func ServeWs(ctx context.Context, hub *Hub, w http.ResponseWriter, r *http.Reque
 	}
 	client := &Client{
 		Conn:      conn,
-		Uid:       r.URL.Query().Get(UidKey),
+		Uid:       r.URL.Query().Get(constant.UidKey),
 		Send:      make(chan []byte),
 		StopWrite: make(chan bool),
 		StopRead:  make(chan bool),

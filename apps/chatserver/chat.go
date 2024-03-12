@@ -32,7 +32,7 @@ func main() {
 	defer hub.Stop()
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		service.ServeWs(ctx, hub, w, r)
+		service.ServeWs(r.Context(), hub, w, r)
 	})
 	server := &http.Server{
 		Addr:              c.Addr,
