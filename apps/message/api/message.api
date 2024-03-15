@@ -43,6 +43,19 @@ type (
 )
 
 type (
+	GetMsgListReq {
+		TargetId    string `json:"target_id"`
+		ContentLike string `json:"content_like"`
+		Page        int64  `json:"page"`
+		Size        int64  `json:"size"`
+	}
+	GetMsgListResp {
+		MessageList []Message `json:"message_list"`
+		Total       int64     `json:"total"`
+	}
+)
+
+type (
 	DownloadFileReq {
 		MsgId    string `json:"msg_id"`
 		FilePath string `json:"file_path"`
@@ -72,6 +85,12 @@ service message-api {
 	)
 	@handler GetNextMsgList
 	post /get_next_msg_list (GetNextMsgListReq) returns (GetNextMsgListResp)
+
+	@doc (
+		summary: "获取信息列表"
+	)
+	@handler GetMsgList
+	post /get_msg_list (GetMsgListReq) returns (GetMsgListResp)
 
 	@doc (
 		summary: "下载文件"

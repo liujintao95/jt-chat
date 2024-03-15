@@ -49,6 +49,17 @@ message GetPreviousMsgListOut {
   repeated Message MessageList = 1;
 }
 
+message GetMsgListIn {
+  string TargetId = 2;
+  string ContentLike = 3;
+  int64  Page = 4;
+  int64  Size = 5;
+}
+message GetMsgListOut {
+  repeated Message MessageList = 1;
+  int64            Total = 2;
+}
+
 message DownloadFileIn {
   string MsgId = 1;
   string FilePath = 2;
@@ -73,6 +84,7 @@ service message {
   rpc CreateMsg(CreateMsgIn) returns(CreateMsgOut);
   rpc GetNextMsgList(GetNextMsgListIn) returns(GetNextMsgListOut);
   rpc GetPreviousMsgList(GetPreviousMsgListIn) returns(GetPreviousMsgListOut);
+  rpc GetMsgList(GetMsgListIn) returns(GetMsgListOut);
   rpc DownloadFile(DownloadFileIn) returns(DownloadFileOut);
   rpc UploadFile(UploadFileIn) returns(UploadFileOut);
 }

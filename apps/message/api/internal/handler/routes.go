@@ -20,6 +20,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/get_msg_list",
+				Handler: message.GetMsgListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/get_next_msg_list",
 				Handler: message.GetNextMsgListHandler(serverCtx),
 			},

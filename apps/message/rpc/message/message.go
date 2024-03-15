@@ -17,6 +17,8 @@ type (
 	CreateMsgOut          = pb.CreateMsgOut
 	DownloadFileIn        = pb.DownloadFileIn
 	DownloadFileOut       = pb.DownloadFileOut
+	GetMsgListIn          = pb.GetMsgListIn
+	GetMsgListOut         = pb.GetMsgListOut
 	GetNextMsgListIn      = pb.GetNextMsgListIn
 	GetNextMsgListOut     = pb.GetNextMsgListOut
 	GetPreviousMsgListIn  = pb.GetPreviousMsgListIn
@@ -29,6 +31,7 @@ type (
 		CreateMsg(ctx context.Context, in *CreateMsgIn, opts ...grpc.CallOption) (*CreateMsgOut, error)
 		GetNextMsgList(ctx context.Context, in *GetNextMsgListIn, opts ...grpc.CallOption) (*GetNextMsgListOut, error)
 		GetPreviousMsgList(ctx context.Context, in *GetPreviousMsgListIn, opts ...grpc.CallOption) (*GetPreviousMsgListOut, error)
+		GetMsgList(ctx context.Context, in *GetMsgListIn, opts ...grpc.CallOption) (*GetMsgListOut, error)
 		DownloadFile(ctx context.Context, in *DownloadFileIn, opts ...grpc.CallOption) (*DownloadFileOut, error)
 		UploadFile(ctx context.Context, in *UploadFileIn, opts ...grpc.CallOption) (*UploadFileOut, error)
 	}
@@ -57,6 +60,11 @@ func (m *defaultMessageZrpcClient) GetNextMsgList(ctx context.Context, in *GetNe
 func (m *defaultMessageZrpcClient) GetPreviousMsgList(ctx context.Context, in *GetPreviousMsgListIn, opts ...grpc.CallOption) (*GetPreviousMsgListOut, error) {
 	client := pb.NewMessageClient(m.cli.Conn())
 	return client.GetPreviousMsgList(ctx, in, opts...)
+}
+
+func (m *defaultMessageZrpcClient) GetMsgList(ctx context.Context, in *GetMsgListIn, opts ...grpc.CallOption) (*GetMsgListOut, error) {
+	client := pb.NewMessageClient(m.cli.Conn())
+	return client.GetMsgList(ctx, in, opts...)
 }
 
 func (m *defaultMessageZrpcClient) DownloadFile(ctx context.Context, in *DownloadFileIn, opts ...grpc.CallOption) (*DownloadFileOut, error) {

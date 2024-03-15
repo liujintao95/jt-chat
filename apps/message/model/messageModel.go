@@ -17,6 +17,8 @@ type (
 		FindOneByMsgId(ctx context.Context, msgId string) (*Message, error)
 		FindNextPageByMsgId(ctx context.Context, msgId, uid, targetId string, size int64) ([]*Message, error)
 		FindPreviousPageByMsgId(ctx context.Context, msgId, uid, targetId string, size int64) ([]*Message, error)
+		FindPageByContentLike(ctx context.Context, contentLike, uid, targetId string, page, size int64) ([]*Message, error)
+		FindCountByContentLike(ctx context.Context, contentLike, uid, targetId string, page, size int64) (int64, error)
 	}
 
 	customMessageModel struct {
@@ -95,6 +97,64 @@ func (m *customMessageModel) FindPreviousPageByMsgId(ctx context.Context, msgId,
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, msgId, uid, targetId, targetId, uid, size)
 	if err != nil {
 		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *customMessageModel) FindPageByContentLike(ctx context.Context, contentLike, uid, targetId string, page, size int64) ([]*Message, error) {
+	var (
+		resp   []*Message
+		offset int64
+	)
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
+	select %s from %s
+	where content like '%%?%%'
+	and (
+		(
+			from = ?
+			and to = ?
+		) or (
+			from = ?
+			and to = ?
+		)
+	)
+	and delete_at is null
+	order by id desc
+	limit ?,?
+	`, messageRows, m.table)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, contentLike, uid, targetId, targetId, uid, offset, size)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *customMessageModel) FindCountByContentLike(ctx context.Context, contentLike, uid, targetId string, page, size int64) (int64, error) {
+	var (
+		resp   int64
+		offset int64
+	)
+	offset = (page - 1) * size
+	query := fmt.Sprintf(`
+	select count(id) from %s
+	where content like '%%?%%'
+	and (
+		(
+			from = ?
+			and to = ?
+		) or (
+			from = ?
+			and to = ?
+		)
+	)
+	and delete_at is null
+	order by id desc
+	limit ?,?
+	`, m.table)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, contentLike, uid, targetId, targetId, uid, offset, size)
+	if err != nil {
+		return 0, err
 	}
 	return resp, nil
 }

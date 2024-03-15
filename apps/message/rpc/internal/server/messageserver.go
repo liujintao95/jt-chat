@@ -37,6 +37,11 @@ func (s *MessageServer) GetPreviousMsgList(ctx context.Context, in *pb.GetPrevio
 	return l.GetPreviousMsgList(in)
 }
 
+func (s *MessageServer) GetMsgList(ctx context.Context, in *pb.GetMsgListIn) (*pb.GetMsgListOut, error) {
+	l := logic.NewGetMsgListLogic(ctx, s.svcCtx)
+	return l.GetMsgList(in)
+}
+
 func (s *MessageServer) DownloadFile(ctx context.Context, in *pb.DownloadFileIn) (*pb.DownloadFileOut, error) {
 	l := logic.NewDownloadFileLogic(ctx, s.svcCtx)
 	return l.DownloadFile(in)

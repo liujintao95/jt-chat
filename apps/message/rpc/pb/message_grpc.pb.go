@@ -21,6 +21,7 @@ type MessageClient interface {
 	CreateMsg(ctx context.Context, in *CreateMsgIn, opts ...grpc.CallOption) (*CreateMsgOut, error)
 	GetNextMsgList(ctx context.Context, in *GetNextMsgListIn, opts ...grpc.CallOption) (*GetNextMsgListOut, error)
 	GetPreviousMsgList(ctx context.Context, in *GetPreviousMsgListIn, opts ...grpc.CallOption) (*GetPreviousMsgListOut, error)
+	GetMsgList(ctx context.Context, in *GetMsgListIn, opts ...grpc.CallOption) (*GetMsgListOut, error)
 	DownloadFile(ctx context.Context, in *DownloadFileIn, opts ...grpc.CallOption) (*DownloadFileOut, error)
 	UploadFile(ctx context.Context, in *UploadFileIn, opts ...grpc.CallOption) (*UploadFileOut, error)
 }
@@ -60,6 +61,15 @@ func (c *messageClient) GetPreviousMsgList(ctx context.Context, in *GetPreviousM
 	return out, nil
 }
 
+func (c *messageClient) GetMsgList(ctx context.Context, in *GetMsgListIn, opts ...grpc.CallOption) (*GetMsgListOut, error) {
+	out := new(GetMsgListOut)
+	err := c.cc.Invoke(ctx, "/pb.message/GetMsgList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *messageClient) DownloadFile(ctx context.Context, in *DownloadFileIn, opts ...grpc.CallOption) (*DownloadFileOut, error) {
 	out := new(DownloadFileOut)
 	err := c.cc.Invoke(ctx, "/pb.message/DownloadFile", in, out, opts...)
@@ -85,6 +95,7 @@ type MessageServer interface {
 	CreateMsg(context.Context, *CreateMsgIn) (*CreateMsgOut, error)
 	GetNextMsgList(context.Context, *GetNextMsgListIn) (*GetNextMsgListOut, error)
 	GetPreviousMsgList(context.Context, *GetPreviousMsgListIn) (*GetPreviousMsgListOut, error)
+	GetMsgList(context.Context, *GetMsgListIn) (*GetMsgListOut, error)
 	DownloadFile(context.Context, *DownloadFileIn) (*DownloadFileOut, error)
 	UploadFile(context.Context, *UploadFileIn) (*UploadFileOut, error)
 	mustEmbedUnimplementedMessageServer()
@@ -102,6 +113,9 @@ func (UnimplementedMessageServer) GetNextMsgList(context.Context, *GetNextMsgLis
 }
 func (UnimplementedMessageServer) GetPreviousMsgList(context.Context, *GetPreviousMsgListIn) (*GetPreviousMsgListOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPreviousMsgList not implemented")
+}
+func (UnimplementedMessageServer) GetMsgList(context.Context, *GetMsgListIn) (*GetMsgListOut, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMsgList not implemented")
 }
 func (UnimplementedMessageServer) DownloadFile(context.Context, *DownloadFileIn) (*DownloadFileOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownloadFile not implemented")
@@ -176,6 +190,24 @@ func _Message_GetPreviousMsgList_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Message_GetMsgList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMsgListIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServer).GetMsgList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.message/GetMsgList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServer).GetMsgList(ctx, req.(*GetMsgListIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Message_DownloadFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DownloadFileIn)
 	if err := dec(in); err != nil {
@@ -230,6 +262,10 @@ var Message_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPreviousMsgList",
 			Handler:    _Message_GetPreviousMsgList_Handler,
+		},
+		{
+			MethodName: "GetMsgList",
+			Handler:    _Message_GetMsgList_Handler,
 		},
 		{
 			MethodName: "DownloadFile",

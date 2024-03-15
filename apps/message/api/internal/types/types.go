@@ -13,6 +13,18 @@ type DownloadFileResp struct {
 	Data []byte `json:"data"`
 }
 
+type GetMsgListReq struct {
+	TargetId    string `json:"target_id"`
+	ContentLike string `json:"content_like"`
+	Page        int64  `json:"page"`
+	Size        int64  `json:"size"`
+}
+
+type GetMsgListResp struct {
+	MessageList []Message `json:"message_list"`
+	Total       int64     `json:"total"`
+}
+
 type GetNextMsgListReq struct {
 	MsgId    string `json:"msg_id"`
 	TargetId string `json:"target_id"`
