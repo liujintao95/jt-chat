@@ -40,25 +40,32 @@ func NewSocketHub(ctx context.Context, svcCtx *svc.ServiceContext) *Hub {
 }
 
 func (h *Hub) Start() {
+	var (
+		client  *Client
+		message []byte
+		msg     *protocol.MessageForm
+		ok      bool
+		err     error
+	)
 	logx.WithContext(h.Ctx).Info("聊天服务器已启动")
 	for {
 		select {
-		case client := <-h.Register:
+		case client = <-h.Register:
 			h.registerClient(client)
 			logx.WithContext(h.Ctx).Infof("%s登录聊天服务器", client.Uid)
-		case client := <-h.Cancellation:
+		case client = <-h.Cancellation:
 			h.cancellationClient(client)
 			logx.WithContext(h.Ctx).Infof("%s登出聊天服务器", client.Uid)
-		case message := <-h.Send:
+		case message = <-h.Send:
 			// 信息发送
-			msg := &protocol.MessageForm{}
-			err := proto.Unmarshal(message, msg)
+			msg = &protocol.MessageForm{}
+			err = proto.Unmarshal(message, msg)
 			if err != nil {
 				logx.WithContext(h.Ctx).Error(errors.Wrapf(err, "消息解码"))
 				continue
 			}
-			_, exits := h.Clients[msg.From]
-			if !exits {
+			_, ok = h.Clients[msg.From]
+			if !ok {
 				continue
 			}
 			h.saveMsg(msg)
@@ -72,11 +79,17 @@ func (h *Hub) Start() {
 }
 
 func (h *Hub) registerClient(client *Client) {
-	if _, ok := h.Clients[client.Uid]; ok {
+	var (
+		msgBytes []byte
+		msg      *protocol.MessageForm
+		ok       bool
+		err      error
+	)
+	if _, ok = h.Clients[client.Uid]; ok {
 		h.Cancellation <- client
 	}
 	h.Clients[client.Uid] = client
-	msg := &protocol.MessageForm{
+	msg = &protocol.MessageForm{
 		From:          constant.AdminUid,
 		To:            client.Uid,
 		ToType:        constant.ChatSingle,
@@ -84,7 +97,7 @@ func (h *Hub) registerClient(client *Client) {
 		ContentType:   constant.ContentTypeText,
 		TransportType: constant.TransportTypeNormal,
 	}
-	msgBytes, err := proto.Marshal(msg)
+	msgBytes, err = proto.Marshal(msg)
 	if err != nil {
 		logx.WithContext(h.Ctx).Error(errors.Wrapf(err, "消息编码"))
 		return
@@ -96,16 +109,25 @@ func (h *Hub) registerClient(client *Client) {
 }
 
 func (h *Hub) cancellationClient(client *Client) {
-	if _, ok := h.Clients[client.Uid]; ok {
+	var (
+		ok bool
+	)
+	if _, ok = h.Clients[client.Uid]; ok {
 		close(client.Send)
 		delete(h.Clients, client.Uid)
 	}
 }
 
 func (h *Hub) sendSingleMsg(msg *protocol.MessageForm) {
-	client, ok := h.Clients[msg.To]
+	var (
+		client  *Client
+		msgByte []byte
+		ok      bool
+		err     error
+	)
+	client, ok = h.Clients[msg.To]
 	if ok {
-		msgByte, err := proto.Marshal(msg)
+		msgByte, err = proto.Marshal(msg)
 		if err == nil {
 			client.Send <- msgByte
 		}
@@ -182,7 +204,10 @@ func (h *Hub) saveMsg(msg *protocol.MessageForm) {
 }
 
 func (h *Hub) Stop() {
-	for _, client := range h.Clients {
+	var (
+		client *Client
+	)
+	for _, client = range h.Clients {
 		h.Cancellation <- client
 	}
 	_ = logx.Close()

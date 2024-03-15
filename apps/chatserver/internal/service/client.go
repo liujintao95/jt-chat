@@ -28,7 +28,13 @@ type Client struct {
 }
 
 func (c *Client) Write() {
-	ticker := time.NewTicker(constant.PingPeriod)
+	var (
+		ticker  *time.Ticker
+		msgByte []byte
+		ok      bool
+		err     error
+	)
+	ticker = time.NewTicker(constant.PingPeriod)
 	defer func() {
 		ticker.Stop()
 		_ = c.Conn.Close()
@@ -37,17 +43,17 @@ func (c *Client) Write() {
 		select {
 		case <-ticker.C:
 			_ = c.Conn.SetWriteDeadline(time.Now().Add(constant.WriteWait))
-			err := c.Conn.WriteMessage(websocket.PingMessage, nil)
+			err = c.Conn.WriteMessage(websocket.PingMessage, nil)
 			if err != nil {
 				return
 			}
-		case message, ok := <-c.Send:
+		case msgByte, ok = <-c.Send:
 			if !ok {
 				_ = c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
 			_ = c.Conn.SetWriteDeadline(time.Now().Add(constant.WriteWait))
-			err := c.Conn.WriteMessage(websocket.BinaryMessage, message)
+			err = c.Conn.WriteMessage(websocket.BinaryMessage, msgByte)
 			if err != nil {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "用户发送消息"))
 				return
@@ -57,35 +63,45 @@ func (c *Client) Write() {
 }
 
 func (c *Client) Read() {
+	var (
+		msgByte []byte
+		msg     *protocol.MessageForm
+		err     error
+	)
 	defer func() {
 		c.Hub.Cancellation <- c
 		_ = c.Conn.Close()
 	}()
 	for {
-		_, message, err := c.Conn.ReadMessage()
+		_, msgByte, err = c.Conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "用户接收消息"))
 			}
 			break
 		}
-		msg := &protocol.MessageForm{}
-		err = proto.Unmarshal(message, msg)
+		msg = &protocol.MessageForm{}
+		err = proto.Unmarshal(msgByte, msg)
 		if err != nil {
 			logx.WithContext(c.Ctx).Error(errors.Wrapf(err, "消息解码"))
 			continue
 		}
-		c.Hub.Send <- message
+		c.Hub.Send <- msgByte
 	}
 }
 
 func ServeWs(ctx context.Context, hub *Hub, w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
+	var (
+		conn   *websocket.Conn
+		client *Client
+		err    error
+	)
+	conn, err = upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logx.WithContext(ctx).Error(errors.Wrapf(err, "建立websocket连接"))
 		return
 	}
-	client := &Client{
+	client = &Client{
 		Conn:      conn,
 		Uid:       r.URL.Query().Get(constant.UidKey),
 		Send:      make(chan []byte),
